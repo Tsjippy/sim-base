@@ -5,6 +5,7 @@
 
 ### Changed
 - do not convert jpeg to jpe
+- limit picture select to required mime type
 
 ### Fixed
 - do not show empty messages
