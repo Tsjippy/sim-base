@@ -4,12 +4,19 @@
 ### Added
 
 ### Changed
+
+### Fixed
+
+### Updated
+
+## [6.0.3] - 2026-01-12
+
+
+### Changed
 - do not convert jpeg to jpe
 
 ### Fixed
 - do not show empty messages
-
-### Updated
 
 ## [6.0.2] - 2025-12-18
 
