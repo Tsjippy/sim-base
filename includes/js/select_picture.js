@@ -1,8 +1,16 @@
 import { displayMessage } from './partials/display_message.js';
 
 console.log("select picture.js loaded");
-function selectImage(event, type='') {
+function selectImage(event, type='', ) {
 	event.preventDefault();
+
+	let library	= {
+		type: 'image',
+	}
+
+	if(type != ''){
+		library.post_mime_type = [`image/${type}`];
+	}
 
 	let frame = wp.media.frames.frame = wp.media({
 		title: 'Select image' ,
@@ -10,13 +18,10 @@ function selectImage(event, type='') {
 			text: 'Save image',
 		},
 		multiple: false,
-		library: {
-			type: 'image'
-		},
+		library: library,
 	});
 
 	// check file type
-	console.log(type)
 	if(type != ''){
 		frame.on( 'selection:toggle', function(ev) {
 			let selection	= frame.state().get('selection').first();
@@ -41,7 +46,7 @@ function selectImage(event, type='') {
 		let parent		= button.closest('.picture-selector-wrapper');
 		
 		//Store the id
-		parent.querySelector(`[name="picture-ids[image]"]`).value = attachment.id;
+		parent.querySelector(`.image-attachment-id`).value = attachment.id;
 		
 		//Show the image
 		let imgdiv = parent.querySelector('.image-preview-wrapper');

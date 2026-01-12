@@ -987,13 +987,13 @@ function pictureSelector($key, $name, $settings, $type=''){
 	wp_enqueue_script('sim_picture_selector_script', INCLUDESURL.'/js/select_picture.min.js', array(), '7.0.0',true);
 	wp_enqueue_style( 'sim_picture_selector_style', INCLUDESURL.'/css/picture_select.min.css', array(), '7.0.0');
 
-	if(empty($settings['picture_ids'][$key])){
+	if(empty($settings['picture-ids'][$key])){
 		$hidden		= 'hidden';
 		$src		= '';
 		$id			= '';
 		$text		= 'Select';
 	}else{
-		$id			= $settings['picture_ids'][$key];
+		$id			= $settings['picture-ids'][$key];
 		$src		= wp_get_attachment_image_url($id);
 		$hidden		= '';
 		$text		= 'Change';
@@ -1003,8 +1003,8 @@ function pictureSelector($key, $name, $settings, $type=''){
 		<div class='image-preview-wrapper <?php echo esc_html($hidden);?>'>
 			<img loading='lazy' class='image-preview' src='<?php echo esc_url($src);?>' alt=''>
 		</div>
-		<input type="button" class="button select-image-button" value="<?php echo esc_attr($text);?> picture for <?php echo esc_attr(strtolower($name));?>" <?php if(!empty($type)){echo esc_attr("data-type='$type'");}?>/>
-		<input type='hidden' class='no-reset image-attachment-id" name='picture-ids[<?php echo esc_html($key);?>]' value='<?php echo esc_attr($id);?>'>
+		<input type="button" class="button select-image-button" value="<?php echo esc_attr($text);?> picture for <?php echo esc_attr(strtolower($name));?>" <?php if(!empty($type)){echo "data-type=".esc_attr($type);}?>>
+		<input type='hidden' class="no-reset image-attachment-id" name="picture-ids[<?php echo esc_html($key);?>]" value="<?php echo esc_attr($id);?>">
 	</div>
 	<?php
 }
