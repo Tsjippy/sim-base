@@ -4,6 +4,7 @@
 ### Added
 
 ### Changed
+- do not convert jpeg to jpe
 
 ### Fixed
 - do not show empty messages
