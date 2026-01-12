@@ -4,13 +4,20 @@
 ### Added
 
 ### Changed
+
+### Fixed
+
+### Updated
+
+## [6.0.4] - 2026-01-12
+
+
+### Changed
 - do not convert jpeg to jpe
 - limit picture select to required mime type
 
 ### Fixed
 - do not show empty messages
-
-### Updated
 
 ## [6.0.2] - 2025-12-18
 
