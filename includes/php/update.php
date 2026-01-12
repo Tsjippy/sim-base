@@ -176,4 +176,47 @@ function afterPluginUpdate($oldVersion){
             }
         }
     }
+
+    if($oldVersion < '6.0.3'){
+        $args = array(
+            'post_type'      => 'attachment',
+            'post_mime_type' => 'image/jpeg', // Uses a wildcard internally (image/*)
+            'numberposts'    => -1
+        );
+
+        $images = get_posts( $args );
+
+        foreach($images as $image){
+            $meta       = get_post_meta($image->ID, '_wp_attachment_metadata', true);
+
+            if(empty($meta['file'])){
+                continue;
+            }
+
+            $old        = $meta['file'];
+
+            if(pathinfo($old, PATHINFO_EXTENSION) != 'jpe'){
+                continue;
+            }
+
+            $new        = str_replace('.jpe', '.jpeg', $old);
+
+            $meta['file']    = $new;
+
+            foreach($meta['sizes'] as &$size){
+                $size['file']   = str_replace('.jpe', '.jpeg', $size['file']);
+            }
+
+            update_post_meta($image->ID, '_wp_attachment_metadata', $meta);
+
+            $paths    = get_post_meta($image->ID, '_wp_attached_file');
+            foreach($paths as &$path){
+                $path   = str_replace('.jpe', '.jpeg', $path);
+            }
+
+            update_post_meta($image->id, '_wp_attached_file', $paths);
+        }
+    }
 }
+
+//add_action('init', function(){afterPluginUpdate('6.0.2');});

@@ -8,7 +8,7 @@ function postLock(){
 }
 
 //Change the extension of all jpg like files to jpe so that they are not directly available for non-logged in users
-add_filter('wp_handle_upload_prefilter', __NAMESPACE__.'\beforeUpload', 1, 1);
+//add_filter('wp_handle_upload_prefilter', __NAMESPACE__.'\beforeUpload', 1, 1);
 function beforeUpload($file) {
     $info 	= pathinfo($file['name']);
     $ext  	= empty($info['extension']) ? '' : '.' . $info['extension'];
