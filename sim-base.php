@@ -8,7 +8,7 @@ namespace SIM;
  * Author:       		Ewald Harmsen
  * AuthorURI:			harmseninnigeria.nl
  * Requires at least:	6.3
- * Requires PHP: 		8.4
+ * Requires PHP: 		8.3
  * Tested up to: 		6.8.3
  * Plugin URI:			https://github.com/Tsjippy/sim-base/
  * Tested:				6.8.3	
