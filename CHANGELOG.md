@@ -4,11 +4,16 @@
 ### Added
 
 ### Changed
-- allow php 8.3
 
 ### Fixed
 
 ### Updated
+
+## [6.0.5] - 2026-01-28
+
+
+### Changed
+- allow php 8.3
 
 ## [6.0.4] - 2026-01-12
 
