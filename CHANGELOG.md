@@ -4,6 +4,7 @@
 ### Added
 
 ### Changed
+- allow php 8.3
 
 ### Fixed
 
