@@ -369,11 +369,19 @@ function pathToUrl($path){
  * @param	bool		$display				Whether to print the message to the screen or not
  * @param	bool|int	$printFunctionHiearchy	Whether to print the full backtrace, false for not printing, true for all, number for max depth
 */
-function printArray($message, $display=false, $printFunctionHiearchy=false){
+function printArray($message, $display=false, $printFunctionHiearchy=false, $error=false){
 	$bt		= debug_backtrace();
 
+	if($error){
+		$type 			= 3;
+		$destination	= WP_CONTENT_DIR.'notice.log';
+	}else{
+		$type 			= 0;
+		$destination 	= null;
+	}
+
 	if($printFunctionHiearchy){
-		error_log("Called from:");
+		error_log("Called from:", $type, $destination);
 		foreach($bt as $index=>$trace){
 			// stop if we have reached the max depth
 			if(is_numeric($printFunctionHiearchy) && $index == $printFunctionHiearchy){
@@ -382,23 +390,23 @@ function printArray($message, $display=false, $printFunctionHiearchy=false){
 			
 			$path	= str_replace(MODULESPATH, '', $trace['file']);
 
-			error_log($index);
-			error_log( "    File: $path");
-			error_log( "    Line {$trace['line']}");
-			error_log( "    Function: {$trace['function']}");
-			error_log( "    Args:");
-			error_log(print_r($trace['args'], true));
+			error_log($index, $type, $destination);
+			error_log( "    File: $path", $type, $destination);
+			error_log( "    Line {$trace['line']}", $type, $destination);
+			error_log( "    Function: {$trace['function']}", $type, $destination);
+			error_log( "    Args:", $type, $destination);
+			error_log(print_r($trace['args'], true), $type, $destination);
 		}
 	}else{
 		$caller = array_shift($bt);
 		$path	= str_replace(MODULESPATH, '', $caller['file']);
-		error_log("Called from file $path line {$caller['line']}");
+		error_log("Called from file $path line {$caller['line']}", $type, $destination);
 	}
 
 	if(is_array($message) || is_object($message)){
-		error_log(print_r($message, true));
+		error_log(print_r($message, true), $type, $destination);
 	}else{
-		error_log(gmdate(DATEFORMAT.' '.TIMEFORMAT, time()).' - '.$message);
+		error_log(gmdate(DATEFORMAT.' '.TIMEFORMAT, time()).' - '.$message, $type, $destination);
 	}
 	
 	if($display){
