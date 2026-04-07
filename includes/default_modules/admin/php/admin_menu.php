@@ -17,18 +17,6 @@ function adminMenu() {
 	
 	global $moduleDirs;
 	global $Modules;
-	
-	if($_GET['page'] == 'sim' || str_contains($_GET['page'], 'sim_')){
-		$message = handlePost();
-
-		if(!empty($message)){
-			?>
-			<div class='success'>
-				<?php echo esc_html($message);?>
-			</div>
-			<?php
-		}
-	}
  
 	do_action('sim_module_actions');
 
@@ -84,7 +72,7 @@ function adminMenu() {
 }
 
 function handlePost(){
-	do_action('sim-admin-settings-post');
+	$message	= apply_filters('sim-admin-settings-post', '');
 	
 	// do some checks
 	if(
@@ -99,7 +87,7 @@ function handlePost(){
 		$message	= "E-mail settings succesfully saved";
 		saveEmails();
 	}else{
-		$message	= "Settings succesfully saved";
+		$message	.= "Settings succesfully saved";
 		saveSettings();
 	}
 	
@@ -239,6 +227,20 @@ function settingsTab($moduleSlug, $moduleName, $settings, $tab){
 
 	?>
 	<div class='tabcontent <?php if($tab != 'settings'){echo 'hidden';}?>' id='settings'>
+		<?php
+		if(
+			(
+				$_GET['page'] == 'sim' || 
+				str_contains($_GET['page'], 'sim_')
+			) &&
+			(
+				empty($_GET['main-tab']) ||
+				$_GET['main-tab']	== 'settings'
+			)
+		){
+			echo handlePost();
+		}
+		?>
 		<h2>Settings</h2>
 			
 		<form action="" method="post">
@@ -307,6 +309,17 @@ function emailSettingsTab($moduleSlug, $moduleName, $settings, $tab){
 
 	?>
 	<div class='tabcontent <?php if($tab != 'emails'){echo 'hidden';}?>' id='emails'>
+		<?php
+		if(
+			(
+				$_GET['page'] == 'sim' || 
+				str_contains($_GET['page'], 'sim_')
+			) &&
+			$_GET['main-tab']	== 'e-mail-settings'
+		){
+			echo handlePost();
+		}
+		?>
 		<h2>E-mail settings</h2>
 			
 		<form action="" method="post">
@@ -365,6 +378,15 @@ function functionsTab($moduleSlug, $moduleName, $settings, $tab){
 	?>
 	<div class='tabcontent <?php if($tab != 'functions'){echo 'hidden';}?>' id='functions'>
 		<?php
+		if(
+			(
+				$_GET['page'] == 'sim' || 
+				str_contains($_GET['page'], 'sim_')
+			) &&
+			$_GET['main-tab']	== 'functions'
+		){
+			echo handlePost();
+		}
 		echo $html;
 		?>
 	</div>
