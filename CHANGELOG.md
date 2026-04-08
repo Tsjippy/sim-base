@@ -5,6 +5,7 @@
 
 ### Changed
 - displaying admin menu messages
+- code refactor
 
 ### Fixed
 
