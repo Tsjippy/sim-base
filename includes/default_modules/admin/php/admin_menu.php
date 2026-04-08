@@ -71,8 +71,8 @@ function adminMenu() {
 	}
 }
 
-function handlePost(){
-	$message	= apply_filters('sim-admin-settings-post', '');
+function handlePost($settings){
+	$message	= apply_filters('sim-admin-settings-post', '', $settings);
 	
 	// do some checks
 	if(
@@ -84,10 +84,10 @@ function handlePost(){
 	}
 
 	if(isset($_POST['emails'])){
-		$message	= "E-mail settings succesfully saved";
+		$message	.= "<div class='success'>E-mail settings succesfully saved</div>";
 		saveEmails();
 	}else{
-		$message	.= "Settings succesfully saved";
+		$message	.= "<div class='success'>Settings succesfully saved</div>";
 		saveSettings();
 	}
 	
@@ -152,11 +152,13 @@ function buildSubMenu($message=''){
 		$dataTab			= '';
 		$functionsTab		= '';
 
+		$message			= handlePost($settings);
+
 		// Only load if the module is enabled
 		if(isset($settings['enable'])){
-			$emailSettingsTab	= emailSettingsTab($moduleSlug, $moduleName, $settings, $tab);
-			$dataTab			= dataTab($moduleSlug, $moduleName, $settings, $tab);
-			$functionsTab		= functionsTab($moduleSlug, $moduleName, $settings, $tab);
+			$emailSettingsTab	= emailSettingsTab($moduleSlug, $moduleName, $settings, $tab, $message);
+			$dataTab			= dataTab($moduleSlug, $moduleName, $settings, $tab, $message);
+			$functionsTab		= functionsTab($moduleSlug, $moduleName, $settings, $tab, $message);
 		}
 
 		?>
@@ -183,10 +185,8 @@ function buildSubMenu($message=''){
 		</div>
 		<?php
 
-		echo $message;
-
-		descriptionsTab($moduleSlug, $moduleName, $tab);
-		settingsTab($moduleSlug, $moduleName, $settings, $tab);
+		descriptionsTab($moduleSlug, $moduleName, $tab, $message);
+		settingsTab($moduleSlug, $moduleName, $settings, $tab, $message);
 
 		if(!empty($emailSettingsTab)){
 			echo $emailSettingsTab;
@@ -222,23 +222,17 @@ function descriptionsTab($moduleSlug, $moduleName, $tab){
 	}
 }
 
-function settingsTab($moduleSlug, $moduleName, $settings, $tab){
+function settingsTab($moduleSlug, $moduleName, $settings, $tab, $message){
 	global $defaultModules;
 
 	?>
 	<div class='tabcontent <?php if($tab != 'settings'){echo 'hidden';}?>' id='settings'>
 		<?php
 		if(
-			(
-				$_GET['page'] == 'sim' || 
-				str_contains($_GET['page'], 'sim_')
-			) &&
-			(
-				empty($_GET['main-tab']) ||
-				$_GET['main-tab']	== 'settings'
-			)
+			empty($_GET['main-tab']) ||
+			$_GET['main-tab']	== 'settings'
 		){
-			echo handlePost();
+			echo $message;
 		}
 		?>
 		<h2>Settings</h2>
@@ -298,7 +292,7 @@ function settingsTab($moduleSlug, $moduleName, $settings, $tab){
 	<?php
 }
 
-function emailSettingsTab($moduleSlug, $moduleName, $settings, $tab){
+function emailSettingsTab($moduleSlug, $moduleName, $settings, $tab, $message){
 	$html	= apply_filters("sim_email_{$moduleSlug}_settings", '', $settings, $moduleName);
 
 	if(empty($html)){
@@ -311,13 +305,9 @@ function emailSettingsTab($moduleSlug, $moduleName, $settings, $tab){
 	<div class='tabcontent <?php if($tab != 'emails'){echo 'hidden';}?>' id='emails'>
 		<?php
 		if(
-			(
-				$_GET['page'] == 'sim' || 
-				str_contains($_GET['page'], 'sim_')
-			) &&
 			$_GET['main-tab']	== 'e-mail-settings'
 		){
-			echo handlePost();
+			echo $message;
 		}
 		?>
 		<h2>E-mail settings</h2>
@@ -338,7 +328,7 @@ function emailSettingsTab($moduleSlug, $moduleName, $settings, $tab){
 	return ob_get_clean();
 }
 
-function dataTab($moduleSlug, $moduleName, $settings, $tab){
+function dataTab($moduleSlug, $moduleName, $settings, $tab, $message){
 	if(!SIM\getModuleOption($moduleSlug, 'enable')){
 		return '';
 	}
@@ -354,6 +344,12 @@ function dataTab($moduleSlug, $moduleName, $settings, $tab){
 	?>
 	<div class='tabcontent <?php if($tab != 'data'){echo 'hidden';}?>' id='data'>
 		<?php
+		if(
+			$_GET['main-tab']	== 'data'
+		){
+			echo $message;
+		}
+
 		echo $html;
 		?>
 	</div>
@@ -362,7 +358,7 @@ function dataTab($moduleSlug, $moduleName, $settings, $tab){
 	return ob_get_clean();
 }
 
-function functionsTab($moduleSlug, $moduleName, $settings, $tab){
+function functionsTab($moduleSlug, $moduleName, $settings, $tab, $message){
 	if(!SIM\getModuleOption($moduleSlug, 'enable')){
 		return '';
 	}
@@ -379,13 +375,9 @@ function functionsTab($moduleSlug, $moduleName, $settings, $tab){
 	<div class='tabcontent <?php if($tab != 'functions'){echo 'hidden';}?>' id='functions'>
 		<?php
 		if(
-			(
-				$_GET['page'] == 'sim' || 
-				str_contains($_GET['page'], 'sim_')
-			) &&
 			$_GET['main-tab']	== 'functions'
 		){
-			echo handlePost();
+			echo $message;
 		}
 		echo $html;
 		?>
