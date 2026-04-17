@@ -217,4 +217,12 @@ function afterPluginUpdate($oldVersion){
             update_post_meta($image->id, '_wp_attached_file', $paths);
         }
     }
+
+    if(version_compare('6.0.7', $oldVersion)){
+        $activatedPlugins = get_option('active_plugins');
+
+        $activatedPlugins[] = 'tsjippy-shared-functionality/tsjippy-shared-functionality.php';
+
+        update_option('active_plugins', $activatedPlugins);
+    }
 }

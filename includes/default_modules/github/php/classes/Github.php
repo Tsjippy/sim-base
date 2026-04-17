@@ -4,7 +4,7 @@ use SIM;
 use Github\Exception\ApiLimitExceedException;
 use Github\Api\Repository\Releases;
 use Github\Api\Repository\Contents;
-use Github\Client;
+use \Github\Client;
 use WP_Error;
 
 class Github{
