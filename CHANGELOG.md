@@ -4,14 +4,21 @@
 ### Added
 
 ### Changed
+
+### Fixed
+
+### Updated
+
+## [6.0.7] - 2026-04-17
+
+
+### Changed
 - displaying admin menu messages
 - code refactor
 - lib updates
 
 ### Fixed
 - heartbeat issues
-
-### Updated
 
 ## [6.0.6] - 2026-03-04
 
