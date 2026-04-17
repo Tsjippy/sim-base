@@ -6,6 +6,8 @@
 ### Changed
 - displaying admin menu messages
 - code refactor
+- lib updates
+- plugin name to tsjippy-shared-functionality
 
 ### Fixed
 - heartbeat issues
