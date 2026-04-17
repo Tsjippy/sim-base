@@ -8,6 +8,7 @@
 - code refactor
 - lib updates
 - plugin name to tsjippy-shared-functionality
+- split in pro
 
 ### Fixed
 - heartbeat issues
