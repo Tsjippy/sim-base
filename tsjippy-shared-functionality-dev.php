@@ -2,15 +2,9 @@
 namespace SIM;
 
 /**
-<<<<<<<< HEAD:tsjippy-shared-functionality-dev.php
- * Plugin Name:  		Shared Functionality Used by Tsjippy Plugins - Development Version
- * Description:  		Shared functionality for a bundle of 34 plugins to add AJAX login, forms and other functionality
  * Version:      		6.0.6
-========
  * Plugin Name:  		Shared Functionality Used by Tsjippy Plugins
  * Description:  		Shared functionality for a bundle of 34 plugins to add AJAX login, forms and other functionality
- * Version:      		6.0.7
->>>>>>>> 7acfa17f6ecbfe0ec8b51c03b44a6664075e49d9:tsjippy-shared-functionality.php
  * Author:       		Ewald Harmsen
  * AuthorURI:			harmseninnigeria.nl
  * Requires at least:	6.3
