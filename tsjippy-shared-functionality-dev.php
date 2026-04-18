@@ -12,7 +12,7 @@ namespace SIM;
  * Tested up to: 		6.9
  * Plugin URI:			https://github.com/Tsjippy/tsjippy-shared-functionality/
  * Tested:				6.9	
- * TextDomain:			tsjippy-shared-functionality
+ * TextDomain:			tsjippy
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
