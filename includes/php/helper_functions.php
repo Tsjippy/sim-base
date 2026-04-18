@@ -379,12 +379,17 @@ function pageSelect($selectId, $pageId=null, $class="", $postTypes=['page', 'loc
 			'post_status' 	=> 'publish',
 			'post_type'     => $postTypes,
 			'posts_per_page'=> -1,
-			'exclude'		=> [get_the_ID()]
+			// 'exclude'		=> [get_the_ID()] // we should not do this as this prevents the use of the cache
 		)
 	);
 
 	$options	= [];
 	foreach ( $pages as $page ) {
+		// skip the current page
+		if($page->ID == get_the_ID()){
+			continue;
+		}
+
 		$options[$page->ID]	= $page->post_title;
 	}
 
@@ -569,8 +574,9 @@ function numberToWords($number) {
     if (($number >= 0 && (int) $number < 0) || (int) $number < 0 - PHP_INT_MAX) {
         // overflow
         trigger_error(
-                esc_html('convert_number_to_words only accepts numbers between -' . PHP_INT_MAX . ' and ' . PHP_INT_MAX, E_USER_WARNING)
+            esc_html('convert_number_to_words only accepts numbers between -' . PHP_INT_MAX . ' and ' . PHP_INT_MAX, E_USER_WARNING)
         );
+		
         return false;
     }
 

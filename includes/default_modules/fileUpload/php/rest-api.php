@@ -44,7 +44,7 @@ function removeDocument(){
     }
 
     if(isset($_POST['metakey'])){
-        $metaKey        = sanitize_text_field($_POST['metakey']);
+        $metaKey        = sanitize_text_field(wp_unslash($_POST['metakey']));
         $metaKeys 		= str_replace(']', '', explode('[', $metaKey));
         $baseMetaKey 	= $metaKeys[0];
         unset($metaKeys[0]);

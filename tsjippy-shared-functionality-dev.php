@@ -3,15 +3,15 @@ namespace SIM;
 
 /**
  * Version:      		6.0.6
- * Plugin Name:  		Shared Functionality Used by Tsjippy Plugins
+ * Plugin Name:  		Shared Functionality For Others - Development Version
  * Description:  		Shared functionality for a bundle of 34 plugins to add AJAX login, forms and other functionality
  * Author:       		Ewald Harmsen
  * AuthorURI:			harmseninnigeria.nl
  * Requires at least:	6.3
  * Requires PHP: 		8.3
- * Tested up to: 		6.9.4
+ * Tested up to: 		6.9
  * Plugin URI:			https://github.com/Tsjippy/tsjippy-shared-functionality/
- * Tested:				6.9.4	
+ * Tested:				6.9	
  * TextDomain:			tsjippy-shared-functionality
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html

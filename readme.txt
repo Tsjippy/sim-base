@@ -1,10 +1,10 @@
-=== tsjippy-shared-functionality ===
+=== Shared Functionality For Others ===
 Contributors: tsjippy
 Donate link: https://harmseninnigeria.nl
 Tags: base, family, signal, forms
 Requires at least: 6.3
-Tested up to: 6.9.4
-Stable tag: 6.0.4
+Tested up to: 6.9
+Stable tag: 6.0.6
 Requires PHP: 8.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
