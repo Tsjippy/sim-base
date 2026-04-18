@@ -2,6 +2,7 @@
 ## [Unreleased] - yyyy-mm-dd
 
 ### Added
+- adminmenu class
 
 ### Changed
 - displaying admin menu messages
