@@ -15,6 +15,7 @@
 
 ### Fixed
 - heartbeat issues
+- show submenu new admin class
 
 ### Updated
 
