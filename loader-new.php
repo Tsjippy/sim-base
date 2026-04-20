@@ -12,7 +12,7 @@ $classFiles = [];
 foreach ($classPaths as $file) {
     $className  = basename($file, '.php');
 
-    $nameSpace  = strtoupper(basename(dirname(dirname(dirname($file)))));
+    $nameSpace  = strtoupper(str_replace('tsjippy-', '', basename(dirname(dirname(dirname($file))))));
 
     if($nameSpace == 'includes'){
         $nameSpace = 'SIM';
@@ -58,6 +58,9 @@ spl_autoload_register(function ($classname) {
 //Load all main files
 $files = glob(__DIR__."/../tsjippy-*{,/includes,/includes/default_modules/*}/php/*.php", GLOB_BRACE);
 foreach ($files as $file) {
+    if(str_contains($file, '-dev/')){
+        continue;
+    }
     $result = require_once($file);
 
     if(is_wp_error($result)){

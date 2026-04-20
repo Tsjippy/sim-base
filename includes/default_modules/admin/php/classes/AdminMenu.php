@@ -108,7 +108,7 @@ class AdminMenu{
 
         $this->settings	= get_option("sim_$slug", []);
 
-        $this->mainDiv	= addElement('div', $this->dom, ['class' => 'module-settings'], '', $this->dom);
+        $this->mainDiv	= addElement('div', $this->dom, ['class' => 'plugin-settings'], '', $this->dom);
         addElement('h1', $this->mainDiv, [], "$name plugin settings", $this->dom);
 
         $this->tabLinkButtonsWrapper	= addElement('div', $this->mainDiv, ['class' => 'tablink-wrapper'], '', $this->dom);            
@@ -142,9 +142,9 @@ class AdminMenu{
         
         // do some checks
         if(
-            !isset($_POST['module']) ||
+            !isset($_POST['plugin']) ||
             !isset($_POST['nonce']) ||
-            !wp_verify_nonce($_POST['nonce'], 'module-settings' )
+            !wp_verify_nonce($_POST['nonce'], 'plugin-settings' )
         ){
             return '';
         }
@@ -181,7 +181,7 @@ class AdminMenu{
         ?>
         <form action="" method="post">
             <input type='hidden' class='no-reset' name='module' value='<?php echo esc_html($slug);?>'>
-            <input type='hidden' class='no-reset' name='nonce' value='<?php echo esc_html(wp_create_nonce('module-settings'));?>'>
+            <input type='hidden' class='no-reset' name='nonce' value='<?php echo esc_html(wp_create_nonce('plugin-settings'));?>'>
 
             <div class='options'>
                 <?php

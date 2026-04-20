@@ -76,9 +76,9 @@ function handlePost($settings){
 	
 	// do some checks
 	if(
-		!isset($_POST['module']) ||
+		!isset($_POST['plugin']) ||
 		!isset($_POST['nonce']) ||
-		!wp_verify_nonce(wp_unslash($_POST['nonce']), 'module-settings' )
+		!wp_verify_nonce(wp_unslash($_POST['nonce']), 'plugin-settings' )
 	){
 		return '';
 	}
@@ -134,7 +134,7 @@ function buildSubMenu($message=''){
 	}
 
 	?>
-	<div class="module-settings">	
+	<div class="plugin-settings">	
 		<h1>
 			<?php echo esc_html($moduleName);?> module
 		</h1>
@@ -239,7 +239,7 @@ function settingsTab($moduleSlug, $moduleName, $settings, $tab, $message){
 			
 		<form action="" method="post">
 			<input type='hidden' class='no-reset' name='module' value='<?php echo esc_html($moduleSlug);?>'>
-			<input type='hidden' class='no-reset' name='nonce' value='<?php echo esc_html(wp_create_nonce('module-settings'));?>'>
+			<input type='hidden' class='no-reset' name='nonce' value='<?php echo esc_html(wp_create_nonce('plugin-settings'));?>'>
 
 			<?php
 			if(in_array($moduleSlug, $defaultModules)){

@@ -31,6 +31,8 @@ abstract class MailSetting{
         $this->headerKey        = $this->keyword."_header";
         $this->subject          = '';
         $this->message          = '';
+        $this->defaultMessage   = '';
+        $this->defaultSubject   = '';
         $this->headers          = [];
 
         $emailSettings          = get_option("sim_$slug")['emails'] ?? [];
@@ -91,15 +93,14 @@ abstract class MailSetting{
      * Prints the e-mail headers input
      */
     protected function printHeadersInput(){
-        $headers    = $this->headers;
         if(empty($this->headers)){
-            $headers    = [''];
+            $this->headers    = [''];
         }
         ?>
         Any additional headers (see <a href='https://developer.wordpress.org/reference/functions/wp_mail/#using-headers-to-set-from-cc-and-bcc-parameters'>here</a>):<br>
         <div class="clone-divs-wrapper">
             <?php
-            foreach($headers as $index=>$header){
+            foreach($this->headers as $index=>$header){
                 ?>
                 <style>
                     .add, .remove{
@@ -174,11 +175,11 @@ abstract class MailSetting{
                 'textarea_rows'             => 10
             );
 
-            echo wp_kses_post(wp_editor(
+            wp_editor(
                 $message,
                 $this->messageKey,
                 $settings
-            ));
+            );
             ?>
         </label>
         <?php
@@ -201,6 +202,10 @@ abstract class MailSetting{
      * Prints all available placeholders to screen
      */
     public function printPlaceholders(){
+        if(empty($this->replaceArray)){
+            return;
+        }
+
         ?>
         <p>
             You can use placeholders in your inputs.<br>

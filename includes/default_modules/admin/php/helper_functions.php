@@ -105,3 +105,77 @@ function printJs(){
 	<?php
 }
 
+function addElement($type, $parent='', $attributes=[], $textContent='', $dom=''){
+	if(empty($parent)){
+		return;
+	}
+
+	if(empty($dom)){
+		$dom	= new \DOMDocument();
+	}
+
+	if(empty($parent)){
+		$parent	= $dom;
+	}
+
+	try {
+		// Text content should not contain <br> tags, replace them with new line characters
+		$textContent = str_replace('<br>', "\n", $textContent);
+
+		$node = $dom->createElement($type, $textContent );
+	} catch (\DOMException $e) {
+		// Catch the specific DOMException
+		SIM\printArray("Caught DOMException: " . $e->getMessage() . " (Code: " . $e->getCode() . ")");
+	} catch (\Exception $e) {
+		// Catch any other general exceptions if needed
+		SIM\printArray( "Caught general Exception: " . $e->getMessage());
+	}
+
+	// Type should come first
+	if(!empty($attributes['type'])){
+		$attributes = ['type' => $attributes['type']] + $attributes;
+	}
+
+	foreach($attributes as $attribute => $value){
+		try{
+			$node->setAttribute($attribute, $value);
+		} catch (\DOMException $e) {
+			// Catch the specific DOMException
+			SIM\printArray("Caught DOMException for attribute '$attribute' " . $e->getMessage() . " (Code: " . $e->getCode() . ")");
+		} catch (\Exception $e) {
+			// Catch any other general exceptions if needed
+			SIM\printArray( "Caught general Exception: " . $e->getMessage());
+		}
+	}
+	
+	try{
+		$parent->appendChild($node);
+	} catch (\DOMException $e) {
+		// Catch the specific DOMException
+		SIM\printArray("Caught DOMException: " . $e->getMessage() . " (Code: " . $e->getCode() . ")");
+	} catch (\Exception $e) {
+		// Catch any other general exceptions if needed
+		SIM\printArray( "Caught general Exception: " . $e->getMessage());
+	}
+
+	return $node;
+}
+
+function addRawHtml($html, $parent, $dom){
+	if(empty($html)){
+		return false;
+	}
+	
+	$html		= trim(force_balance_tags($html));
+
+	$tempDom 		= new \DOMDocument();
+	$tempDom->loadHTML($html);
+
+	// Import the node
+	foreach ($tempDom->getElementsByTagName('body')->item(0)->childNodes as $node) {
+		$node 		= $dom->importNode($node, true);
+		$node		= $parent->appendChild($node);
+	}
+
+	return $node;
+}

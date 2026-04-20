@@ -9,14 +9,14 @@ function saveSettings(){
 	global $Modules;
 
     if(
-		!isset($_POST['module']) ||
+		!isset($_POST['plugin']) ||
 		!isset($_POST['nonce']) ||
-		!wp_verify_nonce(wp_unslash($_POST['nonce']), 'module-settings' )
+		!wp_verify_nonce(wp_unslash($_POST['nonce']), 'plugin-settings' )
 	){
 		return '';
 	}
 
-    $moduleSlug	    = sanitize_key(wp_unslash($_POST['module']));
+    $moduleSlug	    = sanitize_key(wp_unslash($_POST['plugin']));
     $options		= $_POST;
     unset($options['module']);
 
@@ -56,17 +56,17 @@ function saveEmails(){
 	global $Modules;
 
     if(
-		!isset($_POST['module']) ||
+		!isset($_POST['plugin']) ||
 		!isset($_POST['nonce']) ||
         !isset($_POST['emails']) ||
-		!wp_verify_nonce($_POST['nonce'], 'module-settings' )
+		!wp_verify_nonce($_POST['nonce'], 'plugin-settings' )
 	){
 		return '';
 	}
 
-    $moduleSlug	    = sanitize_text_field($_POST['module']);
+    $moduleSlug	    = sanitize_text_field($_POST['plugin']);
     $emailSettings	= $_POST['emails'];
-    unset($emailSettings['module']);
+    unset($emailSettings['plugin']);
 
     foreach($emailSettings as &$emailSetting){
         $emailSetting = SIM\deslash($emailSetting);
