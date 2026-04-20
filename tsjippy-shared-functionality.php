@@ -3,7 +3,7 @@ namespace SIM;
 
 /**
  * Version:      		6.0.6
- * Plugin Name:  		Shared Functionality For Others - Development Version
+ * Plugin Name:  		Shared Functionality For Others
  * Description:  		Shared functionality for a bundle of 34 plugins to add AJAX login, forms and other functionality
  * Author:       		Ewald Harmsen
  * Author URI:			https://harmseninnigeria.nl
