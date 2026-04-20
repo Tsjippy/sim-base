@@ -3,6 +3,7 @@
 
 ### Added
 - adminmenu class
+- if ( ! defined( 'ABSPATH' ) ) exit; safety
 
 ### Changed
 - displaying admin menu messages
