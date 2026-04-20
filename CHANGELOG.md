@@ -13,6 +13,7 @@
 - db calls ar enow cached for family
 - improve performance
 - preparing for sub-plugin
+- code reorder
 
 ### Fixed
 - heartbeat issues
