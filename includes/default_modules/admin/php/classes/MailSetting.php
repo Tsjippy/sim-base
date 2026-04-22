@@ -37,7 +37,7 @@ abstract class MailSetting{
         $this->defaultSubject   = '';
         $this->headers          = [];
 
-        $emailSettings          = get_option("sim_$slug")['emails'] ?? [];
+        $emailSettings          = get_option("sim_{$slug}_emails", []);
         if(isset($emailSettings[$this->subjectKey])){
             $this->subject  = $emailSettings[$this->subjectKey];
         }
@@ -189,15 +189,13 @@ abstract class MailSetting{
 
     /**
      * Prints both the subject and the content inputs to screen
-     *
-     * @param   array   $settings   The module settings array
      */
-    public function printInputs($settings){
-        $this->printSubjectInput($settings);
+    public function printInputs(){
+        $this->printSubjectInput();
 
-        $this->printMessageInput($settings);
+        $this->printMessageInput();
 
-        $this->printHeadersInput($settings);
+        $this->printHeadersInput();
     }
 
     /**

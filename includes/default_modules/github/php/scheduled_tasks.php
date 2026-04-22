@@ -25,7 +25,7 @@ function checkForModuleUpdates(){
 	global $defaultModules;
 
 	// DO not run on localhost
-	if(!empty($_SERVER['HTTP_HOST'] ) && $_SERVER['HTTP_HOST'] == 'localhost' || str_contains($_SERVER['HTTP_HOST'], '.local')) {
+	if(wp_get_environment_type() === 'local'){
 		return;
 	}
 

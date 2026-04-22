@@ -108,7 +108,7 @@ class AdminMenu{
             return '';
         }
 
-        $this->settings	= get_option("sim_$slug", []);
+        $this->settings	= get_option("sim_{$slug}_settings", []);
 
         $this->mainDiv	= addElement('div', $this->dom, ['class' => 'plugin-settings'], '', $this->dom);
         addElement('h1', $this->mainDiv, [], "$name plugin settings", $this->dom);
@@ -139,49 +139,13 @@ class AdminMenu{
         echo $this->dom->saveHtml();
     }
 
-    public function handlePost(){
-        $message	= apply_filters('sim-admin-settings-post', '', $this->settings);
-        
-        // do some checks
-        if(
-            !isset($_POST['plugin']) ||
-            !isset($_POST['nonce']) ||
-            !wp_verify_nonce($_POST['nonce'], 'plugin-settings' )
-        ){
-            return '';
-        }
-
-        if(isset($_POST['emails'])){
-            $message	.= "<div class='success'>E-mail settings succesfully saved</div>";
-            saveEmails();
-        }else{
-            $message	.= "<div class='success'>Settings succesfully saved</div>";
-            saveSettings();
-        }
-        
-        // Build the message
-        $plugin	= SIM\getFromTransient('plugin');
-        if(isset($plugin)){
-            if(isset($plugin['installed'])){
-                $name		 = ucfirst($plugin['installed']);
-                $message	.= "<br><br>Dependend plugin '$name' succesfully installed and activated";
-            }elseif(isset($plugin['activated'])){
-                $name		 = ucfirst($plugin['activated']);
-                $message	.= "<br><br>Dependend plugin '$name' succesfully activated";
-            }
-            SIM\deleteFromTransient('plugin');
-        }
-        
-        return $message;
-    }
-
     public function settingsTab($slug, $name){
         $node    = $this->mainNode('settings', 'Settings');
 
         ob_start();
     
         ?>
-        <form action="" method="post">
+        <form action="" method="put">
             <input type='hidden' class='no-reset' name='module' value='<?php echo esc_html($slug);?>'>
             <input type='hidden' class='no-reset' name='nonce' value='<?php echo esc_html(wp_create_nonce('plugin-settings'));?>'>
 
@@ -230,7 +194,7 @@ class AdminMenu{
         ob_start();
 
         ?>
-        <form action="" method="post">
+        <form action="" method="put">
             <input type='hidden' class='no-reset' name='module' value='<?php echo esc_html($slug);?>'>
             <?php
             echo $html;
@@ -272,5 +236,93 @@ class AdminMenu{
         addRawHtml($html, $node, $this->dom);
 
         return $node;
+    }
+
+    public function handlePost(){
+        $message	= apply_filters('sim-admin-settings-post', '', $this->settings);
+        
+        // do some checks
+        if(
+            !isset($_POST['plugin']) ||
+            !isset($_POST['nonce']) ||
+            !wp_verify_nonce($_POST['nonce'], 'plugin-settings' )
+        ){
+            return '';
+        }
+
+        if(isset($_POST['emails'])){
+            $message	.= "<div class='success'>E-mail settings succesfully saved</div>";
+            saveEmails();
+        }else{
+            $message	.= "<div class='success'>Settings succesfully saved</div>";
+            saveSettings();
+        }
+        
+        // Build the message
+        $plugin	= SIM\getFromTransient('plugin');
+        if(isset($plugin)){
+            if(isset($plugin['installed'])){
+                $name		 = ucfirst($plugin['installed']);
+                $message	.= "<br><br>Dependend plugin '$name' succesfully installed and activated";
+            }elseif(isset($plugin['activated'])){
+                $name		 = ucfirst($plugin['activated']);
+                $message	.= "<br><br>Dependend plugin '$name' succesfully activated";
+            }
+            SIM\deleteFromTransient('plugin');
+        }
+        
+        return $message;
+    }
+
+    /**
+    * Saves modules settings from $_POST
+    */
+    public function saveSettings(){
+        if(
+            !isset($_POST['plugin']) ||
+            !isset($_POST['nonce']) ||
+            !wp_verify_nonce($_POST['nonce'], 'plugin-settings' )
+        ){
+            return '';
+        }
+
+        $slug	    = sanitize_key(wp_unslash($_POST['plugin']));
+        $options	= $_POST;
+        unset($options['module']);
+
+        foreach($options as &$option){
+            $option = SIM\deslash($option);
+        }
+
+        /**
+         * Filters the settings of this sub-plugin
+         * @param   array   $options    The options to save, after being sanitized
+         * @param   array   $settings   The current saved settings, before saving the new ones
+         * @return  array                The options to save, after being processed by the filter
+         */
+        $settings	= apply_filters("sim_module_{$slug}_after_save", $options, get_option("sim_{$slug}_settings", []));
+
+        update_option("sim_{$slug}_settings", $settings);
+    }
+
+    function saveEmails(){
+        if(
+            !isset($_POST['plugin']) ||
+            !isset($_POST['nonce']) ||
+            !isset($_POST['emails']) ||
+            !wp_verify_nonce($_POST['nonce'], 'plugin-settings' )
+        ){
+            return '';
+        }
+
+        $slug	        = sanitize_text_field($_POST['plugin']);
+        $emailSettings	= $_POST['emails'];
+        unset($emailSettings['plugin']);
+
+        foreach($emailSettings as &$emailSetting){
+            $emailSetting = SIM\deslash($emailSetting);
+        }
+
+        update_option("sim_{$slug}_emails", $emailSettings);
     }
 }
