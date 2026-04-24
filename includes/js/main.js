@@ -106,14 +106,6 @@ document.addEventListener("DOMContentLoaded",function() {
 		}
 	});
 
-	//loop over all the tab buttons
-	document.querySelectorAll('.tablink').forEach(function(tabButton){
-		//Add the dataset if it does not exist yet.
-		if(tabButton.dataset.paramVal == undefined){
-			tabButton.dataset.paramVal = tabButton.textContent.replace(' ','-').toLowerCase().trim();
-		}
-	})
-
 	//check for tab actions
 	switchTab();
 

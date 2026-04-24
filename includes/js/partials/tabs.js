@@ -1,15 +1,15 @@
 export function changeUrl(target, secondTab=''){
-    let newParam	= target.dataset.paramVal;
+    let targetId	= target.dataset.target;
     let hash		= target.dataset.hash;
     const url 		= new URL(window.location);
 
     //Change the url params
     if(target.closest('.tabcontent') == null || target.parentNode.classList.contains('modal-content')){
         //Add query-arg if it is a main tab
-        url.searchParams.set('main-tab', newParam);
+        url.searchParams.set('main-tab', targetId);
         url.searchParams.delete('second-tab');
     }else{
-        url.searchParams.set('second-tab', newParam);
+        url.searchParams.set('second-tab', targetId);
     }
 
     if(secondTab != ''){
@@ -67,11 +67,7 @@ export function displayTab(tabButton){
 
     let tab;
     // Get content area
-    if(tabButton.dataset.target == undefined){
-        tab = document.querySelector('#'+tabButton.dataset.paramVal.trim());
-    }else{
-        tab = tabButton.closest('div:not(.tablink-wrapper)').querySelector('#'+tabButton.dataset.target);
-    }
+    tab = tabButton.closest('div:not(.tablink-wrapper)').querySelector('#'+tabButton.dataset.target);
     
     if(tab != null){
         tab.classList.remove('hidden');
