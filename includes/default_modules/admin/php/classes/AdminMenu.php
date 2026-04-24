@@ -57,18 +57,15 @@ class AdminMenu{
         </div>
         <?php
     }
-
-     /**
-    * Build the submenu container and tablink button
-    * 
-    * @param    string $slug    The slug of the submenu, used for the id and data-target of the button
-    * @param    string $name    The name of the submenu
-    * @return   string          The domcontent node
-    */
-    public function mainNode($slug, $name){
-        /**
-         * Tablink button for the submenu
-         */
+    
+    /**
+     * Tablink button for the submenu
+     * 
+     * @param   string  $slug   The slug one of settings, emails, data or functions
+     * 
+     * @return DOMElement       The DOm Document node
+     */
+    public function tabLinkButton($slug){
         $classString		= 'tablink';
         
         if($this->tab == $slug){
@@ -81,8 +78,23 @@ class AdminMenu{
             'data-target'	=> $slug
         ];
 
-        addElement('button', $this->tabLinkButtonsWrapper, $attributes, ucfirst($slug), $this->dom);
+        if($slug == 'settings'){
+            $position   = 'afterBegin';
+        }else{
+            $position   = 'beforeEnd';   
+        }
+        return addElement('button', $this->tabLinkButtonsWrapper, $attributes, ucfirst($slug), $position);
+    }
 
+    /**
+    * Build the submenu container and tablink button
+    * 
+    * @param    string $slug    The slug of the submenu, used for the id and data-target of the button
+    * @param    string $name    The name of the submenu
+    *
+    * @return   DOMElement      The domcontent node
+    */
+    public function mainNode($slug, $name){
         /**
          * Main container for the submenu
          */
@@ -94,8 +106,8 @@ class AdminMenu{
             $attributes['class'] .= ' hidden';
         }
 
-        $node    = addElement('div', $this->mainDiv, $attributes, "", $this->dom);
-        addElement('h2', $node, [], $name, $this->dom);
+        $node    = addElement('div', $this->mainDiv, $attributes);
+        addElement('h2', $node, [], $name);
 
         return $node;
     }
@@ -110,17 +122,26 @@ class AdminMenu{
 
         $this->settings	= get_option("sim_{$slug}_settings", []);
 
-        $this->mainDiv	= addElement('div', $this->dom, ['class' => 'plugin-settings'], '', $this->dom);
-        addElement('h1', $this->mainDiv, [], "$name plugin settings", $this->dom);
+        $message	    = $this->handlePost();
 
-        $this->tabLinkButtonsWrapper	= addElement('div', $this->mainDiv, ['class' => 'tablink-wrapper'], '', $this->dom);            
+        $this->mainDiv	= addElement('div', $this->dom, ['class' => 'plugin-settings']);
+        addElement('h1', $this->mainDiv, [], "$name plugin settings");
+
+        $this->tabLinkButtonsWrapper	= addElement('div', $this->mainDiv, ['class' => 'tablink-wrapper']);
+        
+        $className          = "SIM\\" . strtoupper($slug) . "\\AdminMenu";
+        $subMenu            = new $className($this->settings, $name);
             
-        $settingsTab        = $this->settingsTab($slug, $name);
-        $emailSettingsTab   = $this->emailSettingsTab($slug, $name);
-        $dataTab            = $this->dataTab($slug, $name);
-        $functionsTab       = $this->functionsTab($slug, $name);
+        $settingsTab        = $this->settingsTab($subMenu, $slug, $name);
+        $emailSettingsTab   = $this->emailSettingsTab($subMenu, $slug, $name);
+        $dataTab            = $this->dataTab($subMenu, $slug, $name);
+        $functionsTab       = $this->functionsTab($subMenu, $slug, $name);
 
-        $message	        = $this->handlePost();
+        // Only add a tablink button for the settings if there is at least on other tab
+        if($emailSettingsTab || $dataTab || $functionsTab){
+            $this->tabLinkButton('settings');
+        }
+
         if($this->tab == 'settings'){
             $parent = $settingsTab;
         }elseif($this->tab == 'emails'){
@@ -138,101 +159,71 @@ class AdminMenu{
         echo $this->dom->saveHtml();
     }
 
-    public function settingsTab($slug, $name){
-        $node    = $this->mainNode('settings', 'Settings');
+    public function settingsTab($subMenu, $slug, $name){
+        $node   = $this->mainNode('settings', 'Settings');
 
-        ob_start();
-    
-        ?>
-        <form action="" method="post">
-            <input type='hidden' class='no-reset' name='plugin' value='<?php echo esc_html($slug);?>'>
-            <input type='hidden' class='no-reset' name='nonce' value='<?php echo esc_html(wp_create_nonce('plugin-settings'));?>'>
+        $form   = addElement('form', $node, ['method' => "post"]);
+        addElement('input', $form, ['type' => "hidden", 'name' => "plugin", 'value' => $slug,  'class' => 'no-reset']);
+        addElement('input', $form, ['type' => "hidden", 'class' => 'no-reset', 'name' => "nonce", 'value' => wp_create_nonce('plugin-settings')]);
 
-            <div class='options'>
-                <?php
-                $options	= apply_filters("sim_submenu_{$slug}_options", '', $this->settings, $name);
-                if(empty($options)){
-                    ?>
-                    <div>
-                        No special settings needed for this plugin
-                    </div>
-                    <?php
-                }else{
-                    echo $options;
-                }
-                
-                ?>
-            </div>
+        $wrapper    = addElement('div', $form, ['class' => 'options']);
 
-            <?php
-            // Only show submit button if there is something to submit
-            if(!empty($options)){
-                ?>
-                <br>
-                <br>
-                <input type="submit" value="Save <?php echo esc_html($name);?> settings">
-                <?php
-            }
-            ?>
-        </form>
-        <?php
-        addRawHtml(ob_get_clean(), $node);
+        $hasSettings    = $subMenu->settings($wrapper);
+
+        if($hasSettings){
+            addElement('input', $form, ['type' => "submit", 'value' => "Save $name settings"]);
+        }else{
+            addElement('div', $wrapper, [], 'No special settings needed for this plugin');
+        }
 
         return $node;
     }
 
-    public function emailSettingsTab($slug, $name){
-        $html	= apply_filters("sim_email_{$slug}_settings", '', $this->settings, $name);
-
-        if(empty($html)){
-            return '';
-        }
-
+    public function emailSettingsTab($subMenu, $slug, $name){
         $node    = $this->mainNode('emails', 'E-mail Settings');
 
-        ob_start();
+        $form   = addElement('form', $node, ['method' => "post"]);
+        addElement('input', $form, ['type' => "hidden", 'name' => "plugin", 'value' => $slug,  'class' => 'no-reset']);
 
-        ?>
-        <form action="" method="post">
-            <input type='hidden' class='no-reset' name='plugin' value='<?php echo esc_html($slug);?>'>
-            <?php
-            echo $html;
-            ?>
-            <br>
-            <br>
-            <input type="submit" name="save-email-settings" value="Save <?php echo esc_html($name);?> e-mail settings">
-        </form>
-        <?php
+        $hasEmails  = $subMenu->emails($form);
 
-        addRawHtml(ob_get_clean(), $node);
+        if($hasEmails){
+            addElement('input', $form, ['type' => "submit", 'value' => "Save $name e-mail settings"]);
 
-        return $node;
+            $this->tabLinkButton('emails');
+
+            return $node;
+        }
+        
+        $node->remove();
+
+        return false;
     }
 
-    public function dataTab($slug, $name){
-        $html	= apply_filters("sim_plugin_{$slug}_data", '', $this->settings, $name);
-
-        if(empty($html)){
-            return '';
-        }
-
+    public function dataTab($subMenu, $slug, $name){
         $node    = $this->mainNode('data', 'Data Settings');
 
-        addRawHtml($html, $node);
+        if(!$subMenu->data($node)){
+            $node->remove();
+
+            return false;
+        }
+
+        $this->tabLinkButton('data');
 
         return $node;
     }
 
-    public function functionsTab($slug, $name){
-        $html	= apply_filters("sim_plugin_{$slug}_functions", '', $this->settings, $name);
-
-        if(empty($html)){
-            return '';
-        }
-
+    public function functionsTab($subMenu, $slug, $name){
         $node    = $this->mainNode('functions', 'Functions');
 
-        addRawHtml($html, $node);
+        if(!$subMenu->functions($node)){
+            $node->remove();
+
+            return false;
+        }
+
+        $this->tabLinkButton('functions');
 
         return $node;
     }
@@ -300,9 +291,9 @@ class AdminMenu{
          * @param   array   $settings   The current saved settings, before saving the new ones
          * @return  array                The options to save, after being processed by the filter
          */
-        $settings	= apply_filters("sim_plugin_{$slug}_after_save", $options, get_option("sim_{$slug}_settings", []));
+        $this->settings	= apply_filters("sim_plugin_{$slug}_after_save", $options, get_option("sim_{$slug}_settings", []));
 
-        update_option("sim_{$slug}_settings", $settings);
+        update_option("sim_{$slug}_settings", $this->settings);
     }
 
     public function saveEmails(){

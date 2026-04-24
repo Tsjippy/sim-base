@@ -4,7 +4,7 @@ namespace SIM;
 /**
  * Plugin Name:  		Shared Functionality For Others 
  * Description:  		Shared functionality for a bundle of 34 plugins to add AJAX login, forms and other functionality
- * Version:      		6.0.6
+ * Version:      		7.0.0
  * Author:       		Ewald Harmsen
  * Author URI:			https://harmseninnigeria.nl
  * Requires at least:	6.3
@@ -12,7 +12,7 @@ namespace SIM;
  * Tested up to: 		6.9
  * Plugin URI:			https://github.com/Tsjippy/tsjippy-shared-functionality/
  * Tested:				6.9	
- * TextDomain:			tsjippy-shared-functionality
+ * TextDomain:			tsjippy
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *

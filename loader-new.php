@@ -53,23 +53,36 @@ spl_autoload_register(function ($classname) {
         return;
 	}else{
         // If the class file does not exist, throw an error
-        trigger_error("Class $classname not found in file $classFile", E_USER_ERROR);
+        trigger_error(esc_html("Class $classname not found in file $classFile"), E_USER_ERROR);
     }
 });
 
-//Load all main files
-$files = glob(__DIR__."/../tsjippy-*{,/includes,/includes/default_modules/*}/php/*.php", GLOB_BRACE);
-foreach ($files as $file) {
-    if(str_contains($file, '-dev/')){
-        continue;
+add_action( "plugins_loaded", __NAMESPACE__.'\loadPHPFiles' );
+function loadPHPFiles() {
+    /**
+     * Get active tsjippy plugins so we only load the files of active plugins
+     */
+    $plugins = wp_get_active_and_valid_plugins();
+    $tsjippyPlugins = [];
+    foreach ($plugins as $plugin) {
+        if(strpos($plugin, 'tsjippy-') !== false ){
+            $tsjippyPlugins[]   = basename($plugin, '.php');
+        }
     }
-    $result = require_once($file);
 
-    if(is_wp_error($result)){
-        ?>
-        <div class='error' style='background-color:white;'>
-            <?php echo esc_html($result->get_error_message());?>
-        </div>
-        <?php
+    $globPattern   = "{".implode(",", $tsjippyPlugins)."}";
+
+    //Load all main files
+    $files = glob(__DIR__."/../$globPattern{,/includes,/includes/default_modules/*}/php/*.php", GLOB_BRACE);
+    foreach ($files as $file) {
+        $result = require_once($file);
+
+        if(is_wp_error($result)){
+            ?>
+            <div class='error' style='background-color:white;'>
+                <?php echo esc_html($result->get_error_message());?>
+            </div>
+            <?php
+        }
     }
 }

@@ -107,7 +107,7 @@ function printJs(){
 	<?php
 }
 
-function addElement($type, $parent='', $attributes=[], $textContent=''){
+function addElement($type, $parent='', $attributes=[], $textContent='', $position='beforeEnd'){
 	if(empty($parent)){
 		return;
 	}
@@ -150,7 +150,16 @@ function addElement($type, $parent='', $attributes=[], $textContent=''){
 	}
 	
 	try{
-		$parent->appendChild($node);
+		if($position === 'afterBegin'){
+			$node		= $parent->insertBefore($node, $parent->firstChild);
+		}elseif($position === 'beforeBegin'){
+			$node		= $parent->parentNode->insertBefore($node, $parent);
+		}elseif($position === 'afterEnd'){
+			$node		= $parent->parentNode->insertBefore($node, $parent->nextSibling);
+		}else{
+			// Default to appending if position is not recognized
+			$node		= $parent->appendChild($node);
+		}
 	} catch (\DOMException $e) {
 		// Catch the specific DOMException
 		SIM\printArray("Caught DOMException: " . $e->getMessage() . " (Code: " . $e->getCode() . ")");
@@ -184,14 +193,12 @@ function addRawHtml($html, $parent, $position='beforeEnd'){
 	foreach ($tempDom->getElementsByTagName('body')->item(0)->childNodes as $node) {
 		$node 		= $parent->ownerDocument->importNode($node, true);
 
-		if($position === 'beforeEnd'){
-			$node		= $parent->appendChild($node);
-		}elseif($position === 'afterBegin'){
+		if($position === 'afterBegin'){
 			$node		= $parent->insertBefore($node, $parent->firstChild);
 		}elseif($position === 'beforeBegin'){
 			$node		= $parent->parentNode->insertBefore($node, $parent);
 		}elseif($position === 'afterEnd'){
-			$node		= $parent->parentNode->insertBefore($node, $parent.nextSibling);
+			$node		= $parent->parentNode->insertBefore($node, $parent->nextSibling);
 		}else{
 			// Default to appending if position is not recognized
 			$node		= $parent->appendChild($node);

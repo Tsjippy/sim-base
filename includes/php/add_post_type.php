@@ -163,12 +163,7 @@ add_filter( 'content_template', __NAMESPACE__.'\getTemplateFile', 10, 2 );
 function getTemplateFile($template, $type, $name=''){
 	global $post;
 
-	if(PLUGINVERSION < '7.0.0'){
-		$baseDir		= MODULESPATH;
-	}else{
-		$baseDir		= WP_PLUGIN_DIR;
-	}
-	
+	$baseDir		= WP_PLUGIN_DIR;
 	$templateFile	= '';
 
 	//check what we are dealing with

@@ -226,4 +226,20 @@ function afterPluginUpdate($oldVersion){
 
         update_option('active_plugins', $activatedPlugins);
     }
+
+    if(version_compare('7.0.0', $oldVersion)){
+        $modules     = get_option('sim_modules', []);
+
+        foreach($modules as $module => $settings){
+            if(isset($settings['emails'])){
+                update_option("sim_{$module}_emails", $settings);
+
+                unset($settings['emails']);
+            }
+            
+            update_option("sim_{$module}_settings", $settings);
+        }
+    }
+
+    
 }
