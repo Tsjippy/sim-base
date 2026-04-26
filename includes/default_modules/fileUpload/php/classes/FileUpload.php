@@ -1,6 +1,6 @@
 <?php
-namespace SIM\FILEUPLOAD;
-use SIM;
+namespace TSJIPPY\FILEUPLOAD;
+use TSJIPPY;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -32,13 +32,13 @@ class FileUpload{
 		$this->updatemeta	= $updatemeta;
 
 		//Load js
-		wp_enqueue_script('sim_fileupload_script');
+		wp_enqueue_script('tsjippy_fileupload_script');
 
-		// Will only work if vimeo module is enabled
+		// Will only work if vimeo plugin is enabled
 		// Exposes the vimeoUploader variable
-		wp_enqueue_script('sim_vimeo_uploader_script');
+		wp_enqueue_script('tsjippy_vimeo_uploader_script');
 
-		wp_enqueue_style( 'sim_image-edit');
+		wp_enqueue_style( 'tsjippy_image-edit');
 	}
 
 	/**
@@ -69,7 +69,7 @@ class FileUpload{
 		}
 		
 		//get subvalue if needed
-		$documentArray = SIM\getMetaArrayValue($this->userId, $this->metaKey, $documentArray);
+		$documentArray = TSJIPPY\getMetaArrayValue($this->userId, $this->metaKey, $documentArray);
 
 		return $documentArray;
 	}
@@ -181,7 +181,7 @@ class FileUpload{
 				$libraryId		= $documentPath;
 				$documentPath	= $url;
 			}
-		}elseif(gettype($documentPath) != 'string' || !is_file(SIM\urlToPath($documentPath))){
+		}elseif(gettype($documentPath) != 'string' || !is_file(TSJIPPY\urlToPath($documentPath))){
 			return false;
 		}
 
@@ -202,7 +202,7 @@ class FileUpload{
 			$this->html .= "<input type='hidden' class='no-reset' name='$name' value='$metaValue'>";
 
 		//Check if file is an image
-		if(getimagesize(SIM\urlToPath($url)) !== false) {
+		if(getimagesize(TSJIPPY\urlToPath($url)) !== false) {
 			//Display the image
 			$this->html .= "<a href='$url'><img src='$url' alt='picture' loading='lazy' style='height:150px;'></a>";
 		//File is not an image

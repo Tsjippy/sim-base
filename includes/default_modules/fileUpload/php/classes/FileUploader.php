@@ -1,6 +1,6 @@
 <?php
-namespace SIM\FILEUPLOAD;
-use SIM;
+namespace TSJIPPY\FILEUPLOAD;
+use TSJIPPY;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -144,7 +144,7 @@ class FileUploader{
 
         //Add to library if needed
         if(isset($this->fileParam['library']) && $this->fileParam['library'] == '1'){
-            $attachId	= SIM\addToLibrary($this->targetFile);
+            $attachId	= TSJIPPY\addToLibrary($this->targetFile);
 
             $newValue	= $attachId;
             
@@ -160,7 +160,7 @@ class FileUploader{
         }
         
         if(isset($keys)){
-            SIM\addToNestedArray($keys, $metaValue, $newValue);
+            TSJIPPY\addToNestedArray($keys, $metaValue, $newValue);
         }
         
         if(!empty($this->metaKeyIndex)){

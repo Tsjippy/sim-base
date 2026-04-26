@@ -228,11 +228,11 @@ export async function fetchRestApi(url, formData='', showErrors=true){
 		formData	= new FormData();
 	}
 	
-	formData.append('_wpnonce', sim.restNonce);
+	formData.append('_wpnonce', tsjippy.restNonce);
 	let result;
 	try{
 		result = await fetch(
-			`${sim.baseUrl}/wp-json${sim.restApiPrefix}/${url}`,
+			`${tsjippy.baseUrl}/wp-json${tsjippy.restApiPrefix}/${url}`,
 			{
 				method: 'POST',
 				credentials: 'same-origin',
@@ -269,7 +269,7 @@ export async function fetchRestApi(url, formData='', showErrors=true){
 			if(showErrors){
 				Main.displayMessage(`Problem parsing the json, refresh the page or try again.`, 'error');
 			}
-			console.error(`${sim.baseUrl}/wp-json${sim.restApiPrefix}/${url}` );
+			console.error(`${tsjippy.baseUrl}/wp-json${tsjippy.restApiPrefix}/${url}` );
 			console.error(response);
 		}else{
 			let modal	= `<div id='response-details' class="modal hidden" style='z-index:9999999999;'>`;
@@ -280,7 +280,7 @@ export async function fetchRestApi(url, formData='', showErrors=true){
 			modal	+= `</div>`;
 
 			document.querySelector('body').insertAdjacentHTML('afterBegin', modal);
-			Main.displayMessage(`Error loading url ${sim.baseUrl}/wp-json${sim.restApiPrefix}/${url}<br><button class='button small' id='error-details' onclick='(function(){ document.getElementById("response-details").classList.remove("hidden"); })();'>Details</button><br><div class='hidden response-message'>${response}</div>`, 'error');
+			Main.displayMessage(`Error loading url ${tsjippy.baseUrl}/wp-json${tsjippy.restApiPrefix}/${url}<br><button class='button small' id='error-details' onclick='(function(){ document.getElementById("response-details").classList.remove("hidden"); })();'>Details</button><br><div class='hidden response-message'>${response}</div>`, 'error');
 		}
 		
 		return false;

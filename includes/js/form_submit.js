@@ -3,7 +3,7 @@ console.log('formsubmit loaded');
 import {formReset, submitForm, markComplete, fetchRestApi, prepareForValidation} from './partials/form_submit_functions.js';
 export {formReset, submitForm, markComplete, fetchRestApi, prepareForValidation};
 
-document.querySelectorAll('form.sim-form-wrapper').forEach(form=>form.addEventListener("submit", markComplete));
+document.querySelectorAll('form.tsjippy-form-wrapper').forEach(form=>form.addEventListener("submit", markComplete));
 
 // check for unsaved formdata
 window.addEventListener("beforeunload", (event) => {
@@ -19,7 +19,7 @@ window.addEventListener("beforeunload", (event) => {
 	});
 
 	// check all inputs
-	document.querySelectorAll('form.sim-form-wrapper input:not([type=radio], [type=checkbox]), form textarea').forEach(el=>{
+	document.querySelectorAll('form.tsjippy-form-wrapper input:not([type=radio], [type=checkbox]), form textarea').forEach(el=>{
 		if(el.defaultValue != el.value){
 			console.log(el);
 			console.log(`${el.defaultValue} - ${el.value}`);
@@ -28,7 +28,7 @@ window.addEventListener("beforeunload", (event) => {
 	});
 
 	// check all checkboxes and radio
-	document.querySelectorAll('form.sim-form-wrapper input[type=radio], form input[type=checkbox]').forEach(el=>{
+	document.querySelectorAll('form.tsjippy-form-wrapper input[type=radio], form input[type=checkbox]').forEach(el=>{
 		if(el.defaultChecked != el.checked){
 			console.log(el);
 			console.log(`${el.defaultChecked} - ${el.checked}`);
@@ -37,7 +37,7 @@ window.addEventListener("beforeunload", (event) => {
 	});
 
 	// check all dropdowns
-	document.querySelectorAll('form.sim-form-wrapper select').forEach(el=>{
+	document.querySelectorAll('form.tsjippy-form-wrapper select').forEach(el=>{
 		if(el.selectedIndex != 0 && el.options[el.selectedIndex] != undefined && !el.options[el.selectedIndex].defaultSelected){
 			console.log(el)
 			console.log(el.options[el.selectedIndex].defaultSelected);

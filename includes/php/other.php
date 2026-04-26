@@ -1,5 +1,5 @@
 <?php
-namespace SIM;
+namespace TSJIPPY;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -131,8 +131,8 @@ function init(){
 	if( ! function_exists('get_plugin_data') ){
 		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 	}
-	if(get_option('sim_version') != PLUGINVERSION){
-		update_option('sim_version', PLUGINVERSION);
+	if(get_option('tsjippy_version') != PLUGINVERSION){
+		update_option('tsjippy_version', PLUGINVERSION);
 	}
 
 	//wp_deregister_script('heartbeat');
@@ -162,3 +162,19 @@ function cleanOutput($response){
 
 // only load needed block assets
 add_filter( 'should_load_separate_core_block_assets', '__return_true' );
+
+function maybeGetUserPageId($userId){
+    $userPageId	= false;
+
+    if(function_exists('TSJIPPY\USERPAGES\getUserPageId')){
+        $userPageId = USERPAGES\getUserPageId($userId);
+    }
+
+    return $userPageId;
+}
+
+function maybeGetUserPageUrl($userId){
+	$url	= apply_filters('tsjippy-user-page-url', false, $userId);
+
+	return $url;
+}

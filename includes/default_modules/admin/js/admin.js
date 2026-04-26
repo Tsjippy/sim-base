@@ -2,7 +2,7 @@ import {changeUrl, displayTab} from './../../../../includes/js/partials/tabs.js'
 import {showModal} from './../../../../includes/js/partials/modals.js'
 import {fetchRestApi} from  './../../../../includes/js/partials/form_submit_functions.js'
 import { showLoader } from  './../../../../includes/js/partials/show_loader.js';
-import {copyFormInput, fixNumbering, removeNode} from './../../../../../../sim-modules/forms/js/form_exports.js'
+import {copyFormInput, fixNumbering, removeNode} from './../../../../../tsjippy-forms/js/form_exports.js'
 import { bind as NiceSelect } from '../../../js/node_modules/nice-select2';
 
 console.log('admin.js loaded');
@@ -27,6 +27,9 @@ document.addEventListener("DOMContentLoaded", function() {
 		    NiceSelect(select, {searchable: true});
         }
 	});
+
+    //check for tab actions
+	switchTab();
 
     // Display loaders
     document.querySelectorAll(`.loader-image-trigger`).forEach( el =>{
@@ -94,11 +97,11 @@ window.addEventListener("click", async event => {
 
 		//show the tab
 		displayTab(target);
-	}else if(target.matches(`.sim.release`)){
+	}else if(target.matches(`.tsjippy.release`)){
         showModal('release');
 
         let formData    = new FormData();
-        formData.append('module-name', target.dataset.name);
+        formData.append('plugin-name', target.dataset.name);
         
         let response    = await fetchRestApi('get-changelog', formData);
 

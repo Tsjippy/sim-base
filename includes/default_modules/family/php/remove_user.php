@@ -1,6 +1,6 @@
 <?php
-namespace SIM\FAMILY;
-use SIM;
+namespace TSJIPPY\FAMILY;
+use TSJIPPY;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

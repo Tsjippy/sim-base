@@ -1,6 +1,6 @@
 <?php
-namespace SIM\ADMIN;
-use SIM;
+namespace TSJIPPY\ADMIN;
+use TSJIPPY;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -37,7 +37,7 @@ abstract class MailSetting{
         $this->defaultSubject   = '';
         $this->headers          = [];
 
-        $emailSettings          = get_option("sim_{$slug}_emails", []);
+        $emailSettings          = get_option("tsjippy_{$slug}_emails", []);
         if(isset($emailSettings[$this->subjectKey])){
             $this->subject  = $emailSettings[$this->subjectKey];
         }
@@ -149,7 +149,7 @@ abstract class MailSetting{
         ?>
         <label>
             E-mail subject:<br>
-            <input type='text' name="emails[<?php echo esc_html($this->subjectKey);?>]" value="<?php echo esc_html($subject);?>" style="width:100%;">
+            <input type='text' name="emails[<?php echo esc_html($this->subjectKey);?>]" value="<?php echo esc_html($subject);?>" style="width: 98%;max-width: 700px;">
         </label>
         <br>
         <?php
@@ -165,26 +165,22 @@ abstract class MailSetting{
         }
 
         ?>
-        <label>
-            E-mail content
-            <?php
-            $settings = array(
-                'wpautop'                   => false,
-                'media_buttons'             => false,
-                'forced_root_block'         => true,
-                'convert_newlines_to_brs'   => true,
-                'textarea_name'             => "emails[$this->messageKey]",
-                'textarea_rows'             => 10
-            );
-
-            wp_editor(
-                $message,
-                $this->messageKey,
-                $settings
-            );
-            ?>
-        </label>
+        <div style='margin-bottom: -30px;'>E-mail content</div>
         <?php
+        $settings = array(
+            'wpautop'                   => false,
+            'media_buttons'             => false,
+            'forced_root_block'         => true,
+            'convert_newlines_to_brs'   => true,
+            'textarea_name'             => "emails[$this->messageKey]",
+            //'textarea_rows'             => 10
+        );
+
+        wp_editor(
+            $message,
+            $this->messageKey,
+            $settings
+        );
     }
 
     /**
@@ -192,6 +188,8 @@ abstract class MailSetting{
      */
     public function printInputs(){
         $this->printSubjectInput();
+
+        echo '<br>';
 
         $this->printMessageInput();
 

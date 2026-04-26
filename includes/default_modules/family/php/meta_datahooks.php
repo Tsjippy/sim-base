@@ -1,13 +1,13 @@
 <?php
-namespace SIM\FAMILY;
-use SIM;
+namespace TSJIPPY\FAMILY;
+use TSJIPPY;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Adds family values to the default values of a form
-add_filter('sim_forms_load_userdata', __NAMESPACE__.'\addFamilyData', 10, 2);
+add_filter('tsjippy_forms_load_userdata', __NAMESPACE__.'\addFamilyData', 10, 2);
 function addFamilyData($usermeta, $userId){
-	$family	= new SIM\FAMILY\Family();
+	$family	= new TSJIPPY\FAMILY\Family();
 
     // check if this user has family
     if(!$family->hasFamily($userId)){
@@ -33,7 +33,7 @@ function addFamilyData($usermeta, $userId){
  * Gets all the family meta keys
  */
 function getFamilyMetaKeys( &$familyMetaKeys ){
-    $familyMetaKeys = apply_filters('sim-family-meta-keys', ['family_name', 'family_picture']);
+    $familyMetaKeys = apply_filters('tsjippy-family-meta-keys', ['family_name', 'family_picture']);
 
     return array_merge(
         $familyMetaKeys, 
@@ -67,7 +67,7 @@ function getFamilyMeta($value, $userId, $metaKey ){
         return $value;
     }
 
-    $family	= new SIM\FAMILY\Family();
+    $family	= new TSJIPPY\FAMILY\Family();
 
     // check if this user has family
     if(!$family->hasFamily($userId)){
@@ -105,7 +105,7 @@ function addFamilyMeta($value, $userId, $metaKey, $metaValue){
         return $value;
     }
 
-    $family	= new SIM\FAMILY\Family();
+    $family	= new TSJIPPY\FAMILY\Family();
 
     // check if this user has family
     if(!$family->hasFamily($userId)){
@@ -172,7 +172,7 @@ add_filter( "delete_user_metadata", function($value, $userId, $metaKey, $metaVal
         return $value;
     }
 
-    $family	= new SIM\FAMILY\Family();
+    $family	= new TSJIPPY\FAMILY\Family();
 
     if(in_array($metaKey, (array)$familyMetaKeys)){
         return $family->removeFamilyMeta($userId, $metaKey);
@@ -203,7 +203,7 @@ add_filter( "delete_user_metadata", function($value, $userId, $metaKey, $metaVal
 
 }, 10, 5);
 
-// Make sure the forms module knows it as well
-add_filter('sim-forms-user-meta-keys', function($userMetaKeys){
+// Make sure the forms plugin knows it as well
+add_filter('tsjippy-forms-user-meta-keys', function($userMetaKeys){
     return array_merge($userMetaKeys, getFamilyMetaKeys($familyMetaKeys));
 });

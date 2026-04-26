@@ -1,6 +1,6 @@
 <?php
-namespace SIM\FILEUPLOAD;
-use SIM;
+namespace TSJIPPY\FILEUPLOAD;
+use TSJIPPY;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -71,7 +71,7 @@ function removeDocument(){
     
     //remove from array
     if(is_array($metaKeys) && !empty($metaKeys)){
-        SIM\removeFromNestedArray($documentsArray, $metaKeys);
+        TSJIPPY\removeFromNestedArray($documentsArray, $metaKeys);
     }else{
         $documentsArray = '';
     }

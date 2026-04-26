@@ -1,5 +1,5 @@
 <?php
-namespace SIM;
+namespace TSJIPPY;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -12,7 +12,7 @@ $taxnames=[];
 
 /**
  * Adds a new post type and taxonomy
- * Make sure to also register a template with the name sim/{$single}meta
+ * Make sure to also register a template with the name tsjippy/{$single}meta
  *
  * @param  string 	$single		the single name of the posttype
  * @param  string	$plural     the plural name of the post type
@@ -68,11 +68,11 @@ function registerPostTypeAndTax($single, $plural){
             array( 'core/paragraph', array(
                 'placeholder' => 'Add a Description...',
             ) ),
-            array( "sim/{$single}meta" )
+            array( "tsjippy/{$single}meta" )
         ),
 	);
 
-	$args	= apply_filters('sim-post-type-creation-args', $args, $single);
+	$args	= apply_filters('tsjippy-post-type-creation-args', $args, $single);
 	
 	//Create the custom post type
 	register_post_type( $single, $args );
@@ -208,7 +208,7 @@ function getTemplateFile($template, $type, $name=''){
 	}
 
 	if(!empty($templateFile)){
-		$templateFile	= apply_filters('sim-template-filter', $templateFile);
+		$templateFile	= apply_filters('tsjippy-template-filter', $templateFile);
 
 		if (
 			file_exists($templateFile)										&&		// template file exists

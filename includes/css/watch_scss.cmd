@@ -1,1 +1,1 @@
-sass --watch --style=compressed ".\scss\main.scss" "sim.min.css"
+sass --watch --style=compressed ".\scss\main.scss" "main.min.css"

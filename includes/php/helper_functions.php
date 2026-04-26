@@ -1,5 +1,5 @@
 <?php
-namespace SIM;
+namespace TSJIPPY;
 
 use WP_Error;
 
@@ -139,7 +139,7 @@ function getUserAccounts($returnFamily=false, $adults=true, $fields=[], $extraAr
  * @return	string						The html
  */
 function userSelect($title, $onlyAdults=false, $families=false, $class='', $id='user-selection', $args=[], $userId='', $excludeIds=[1], $type='select', $listId='', $multiple=false){
-	wp_enqueue_script('sim_user_select_script');
+	wp_enqueue_script('tsjippy_user_select_script');
 	$html = "";
 
 	if(
@@ -866,42 +866,6 @@ function processImages($post){
 }
 
 /**
- * Get html to select an image
- * @param	string 		$key			the image key in the module settings
- * @param	string		$name			Human readable name of the picture
- * @param	array		$settings		The module settings array
- * @param	string		$type			The image type you allow
- *
- * @return	string						the selector html
-*/
-function pictureSelector($key, $name, $settings, $type=''){
-	wp_enqueue_media();
-	wp_enqueue_script('sim_picture_selector_script', INCLUDESURL.'/js/select_picture.min.js', array(), '7.0.0',true);
-	wp_enqueue_style( 'sim_picture_selector_style', INCLUDESURL.'/css/picture_select.min.css', array(), '7.0.0');
-
-	if(empty($settings['picture-ids'][$key])){
-		$hidden		= 'hidden';
-		$src		= '';
-		$id			= '';
-		$text		= 'Select';
-	}else{
-		$id			= $settings['picture-ids'][$key];
-		$src		= wp_get_attachment_image_url($id);
-		$hidden		= '';
-		$text		= 'Change';
-	}
-	?>
-	<div class='picture-selector-wrapper'>
-		<div class='image-preview-wrapper <?php echo esc_html($hidden);?>'>
-			<img loading='lazy' class='image-preview' src='<?php echo esc_url($src);?>' alt=''>
-		</div>
-		<input type="button" class="button select-image-button" value="<?php echo esc_attr($text);?> picture for <?php echo esc_attr(strtolower($name));?>" <?php if(!empty($type)){echo "data-type=".esc_attr($type);}?>>
-		<input type='hidden' class="no-reset image-attachment-id" name="picture-ids[<?php echo esc_html($key);?>]" value="<?php echo esc_attr($id);?>">
-	</div>
-	<?php
-}
-
-/**
  * Remove a single file or a folder including all the files
  * @param	string 		$target			The path to delete
 */
@@ -1019,7 +983,7 @@ function addUserAccount($firstName, $lastName, $email, $approved = false, $valid
 		return new \WP_Error('User creation', $userId->get_error_message());
 	}
 
-	if(!empty($roles) && function_exists('SIM\USERMANAGEMENT\updateRoles')){
+	if(!empty($roles) && function_exists('TSJIPPY\USERMANAGEMENT\updateRoles')){
 		USERMANAGEMENT\updateRoles($userId, $roles);
 	}
 	
@@ -1028,7 +992,7 @@ function addUserAccount($firstName, $lastName, $email, $approved = false, $valid
 		wp_send_new_user_notifications($userId, 'user');
 
 		//Force an account update
-		do_action( 'sim_approved_user', $userId);
+		do_action( 'tsjippy_approved_user', $userId);
 	}else{
 		//Make the useraccount inactive
 		update_user_meta( $userId, 'disabled', 'pending');
@@ -1257,8 +1221,6 @@ function processImagesAction() {
 	add_action( 'process_images_action', __NAMESPACE__.'\processImages' );
 }
 
-
-
 /**
  * Prints something to the log file and optional to the screen
  * @param 	string		$message	 			The message to be printed
@@ -1284,7 +1246,7 @@ function printArray($message, $display=false, $printFunctionHiearchy=false, $err
 				break;
 			}
 			
-			$path	= str_replace(MODULESPATH, '', $trace['file']);
+			$path	= str_replace(PLUGINPATH, '', $trace['file']);
 
 			error_log("$index\n", $type, $destination);
 			error_log( "    File: $path\n", $type, $destination);
@@ -1295,7 +1257,7 @@ function printArray($message, $display=false, $printFunctionHiearchy=false, $err
 		}
 	}else{
 		$caller = array_shift($bt);
-		$path	= str_replace(MODULESPATH, '', $caller['file']);
+		$path	= str_replace(PLUGINPATH, '', $caller['file']);
 		error_log("Called from file $path line {$caller['line']}\n", $type, $destination);
 	}
 
@@ -1317,4 +1279,114 @@ function printArray($message, $display=false, $printFunctionHiearchy=false, $err
 		</pre>
 		<?php
 	}
+}
+
+/**
+ * Adds an element to a DOM Document Node
+ * 
+ * @param	string				$type			The type of html element to add
+ * @param	string|DOMELement	$parent			The parent node to append to, default empty for a new DOM
+ * @param	array				$attributes		The html attributes for the element
+ * @param	string				$textContent	The text for the element
+ * @param	string				$position		One of beforeBegin, afterBegin, beforeEnd, afterEnd. Default beforeEnd
+ */
+function addElement($type, $parent='', $attributes=[], $textContent='', $position='beforeEnd'){
+	if(empty($parent)){
+		return;
+	}
+
+	if(empty($parent)){
+		$dom	= new \DOMDocument();
+		$parent	= $dom;
+	}
+
+	$dom	= $parent->ownerDocument ?? $parent;
+
+	try {
+		// Text content should not contain <br> tags, replace them with new line characters
+		$textContent = str_replace('<br>', "\n", $textContent);
+
+		$node = $dom->createElement($type, $textContent );
+	} catch (\DOMException $e) {
+		// Catch the specific DOMException
+		TSJIPPY\printArray("Caught DOMException: " . $e->getMessage() . " (Code: " . $e->getCode() . ")");
+	} catch (\Exception $e) {
+		// Catch any other general exceptions if needed
+		TSJIPPY\printArray( "Caught general Exception: " . $e->getMessage());
+	}
+
+	// Type should come first
+	if(!empty($attributes['type'])){
+		$attributes = ['type' => $attributes['type']] + $attributes;
+	}
+
+	foreach($attributes as $attribute => $value){
+		try{
+			$node->setAttribute($attribute, $value);
+		} catch (\DOMException $e) {
+			// Catch the specific DOMException
+			TSJIPPY\printArray("Caught DOMException for attribute '$attribute' " . $e->getMessage() . " (Code: " . $e->getCode() . ")");
+		} catch (\Exception $e) {
+			// Catch any other general exceptions if needed
+			TSJIPPY\printArray( "Caught general Exception: " . $e->getMessage());
+		}
+	}
+	
+	try{
+		if($position === 'afterBegin'){
+			$node		= $parent->insertBefore($node, $parent->firstChild);
+		}elseif($position === 'beforeBegin'){
+			$node		= $parent->parentNode->insertBefore($node, $parent);
+		}elseif($position === 'afterEnd'){
+			$node		= $parent->parentNode->insertBefore($node, $parent->nextSibling);
+		}else{
+			// Default to appending if position is not recognized
+			$node		= $parent->appendChild($node);
+		}
+	} catch (\DOMException $e) {
+		// Catch the specific DOMException
+		TSJIPPY\printArray("Caught DOMException: " . $e->getMessage() . " (Code: " . $e->getCode() . ")");
+	} catch (\Exception $e) {
+		// Catch any other general exceptions if needed
+		TSJIPPY\printArray( "Caught general Exception: " . $e->getMessage());
+	}
+
+	return $node;
+}
+
+/**
+ * Converst a string of HTML into a DOM element and adds it to the parent element
+ * @param	string		$html	The HTML string to convert
+ * @param	DOMElement	$parent	The parent element to add the new element to
+ * @param	string		$position	The position to add the new element (beforeEnd, afterBegin, beforeBegin, afterEnd)
+ * 
+ * @return	DOMElement|false	The newly created DOM element or false if the HTML string was empty
+ */
+function addRawHtml($html, $parent, $position='beforeEnd'){
+	if(empty($html)){
+		return false;
+	}
+	
+	$html		= trim(force_balance_tags($html));
+
+	$tempDom 		= new \DOMDocument();
+	$tempDom->loadHTML($html);
+
+	// Import the node
+	foreach ($tempDom->getElementsByTagName('body')->item(0)->childNodes as $node) {
+		$node 		= $parent->ownerDocument->importNode($node, true);
+
+		if($position === 'afterBegin'){
+			$node		= $parent->insertBefore($node, $parent->firstChild);
+		}elseif($position === 'beforeBegin'){
+			$node		= $parent->parentNode->insertBefore($node, $parent);
+		}elseif($position === 'afterEnd'){
+			$node		= $parent->parentNode->insertBefore($node, $parent->nextSibling);
+		}else{
+			// Default to appending if position is not recognized
+			$node		= $parent->appendChild($node);
+		}
+	}
+
+	return $node;
 }

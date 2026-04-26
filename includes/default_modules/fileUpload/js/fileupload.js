@@ -98,8 +98,8 @@ async function fileUpload(target){
 			//update post id on a postform
 			await uploadVideo(file);
 		// file to big
-		}else if(file.size > sim.maxFileSize){
-			Main.displayMessage('File too big, max file size is ' + (parseInt(sim.maxFileSize)/1024/1024) + 'MB' ,'error');
+		}else if(file.size > tsjippy.maxFileSize){
+			Main.displayMessage('File too big, max file size is ' + (parseInt(tsjippy.maxFileSize)/1024/1024) + 'MB' ,'error');
 			
 			target.value = '';
 			return;
@@ -130,7 +130,7 @@ async function fileUpload(target){
 	//Listen to the upload status
 	request.upload.addEventListener('progress', fileUploadProgress, false);
 	
-	request.open('POST', sim.ajaxUrl, true);
+	request.open('POST', tsjippy.ajaxUrl, true);
 	
 	//Create a progressbar
 	createProgressBar(target);
@@ -203,7 +203,7 @@ function fileUploadSucces(result){
 	
 	for(const element of imgUrls) {
 		src 			= element['url'];
-		let url 		= sim.baseUrl+'/'+src;
+		let url 		= tsjippy.baseUrl+'/'+src;
 		let value		= '';
 		let anchorLink	= '';
 		
@@ -355,7 +355,7 @@ async function uploadVideo(file){
         formData.append('post-id', postId);
     
         let request = new XMLHttpRequest();
-        request.open('POST', `${sim.baseUrl}/wp-json${sim.restApiPrefix}/vimeo/add_uploaded_vimeo`, false);
+        request.open('POST', `${tsjippy.baseUrl}/wp-json${tsjippy.restApiPrefix}/vimeo/add_uploaded_vimeo`, false);
         request.send(formData);
 
 		//Remove progress barr

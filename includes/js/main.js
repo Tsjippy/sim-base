@@ -21,7 +21,7 @@ export function getRoute(target,lat,lon){
 	if(isMobileDevice()){
 		var origin = '';
 	}else{
-		var origin = '&origin='+sim.address;
+		var origin = '&origin='+tsjippy.address;
 	}
 	var url = 'https://www.google.com/maps/dir/?api=1&destination='+lat+','+lon+origin;
 	var win = window.open(url, '_blank');

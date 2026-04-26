@@ -43,9 +43,12 @@ table{
     }
 }
 
-.tablink.active{
-    background: firebrick;
-    color: white;
+.tablink{
+    margin-right: 2px;
+    &.active{
+        background: firebrick;
+        color: white;
+    }
 }
 
 .hidden{

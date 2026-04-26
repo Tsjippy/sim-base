@@ -1,6 +1,6 @@
 <?php
-namespace SIM\FILEUPLOAD;
-use SIM;
+namespace TSJIPPY\FILEUPLOAD;
+use TSJIPPY;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

@@ -1,5 +1,5 @@
 <?php
-namespace SIM;
+namespace TSJIPPY;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -19,5 +19,5 @@ add_action( 'activated_plugin', function ( $plugin ) {
     $family->createDbTables();
 
     //redirect after plugin activation
-    exit( esc_url(wp_safe_redirect( admin_url( esc_url('admin.php?page=sim') ) ) ) );
+    exit( esc_url(wp_safe_redirect( admin_url( esc_url('admin.php?page=tsjippy') ) ) ) );
 } );

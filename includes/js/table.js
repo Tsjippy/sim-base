@@ -225,7 +225,7 @@ function sortTable(target){
 //Store the table headers as td attribute for use on smaller screens
 export function setTableLabel() {
 	//Loop over all tables
-	document.querySelectorAll('.sim-table').forEach(function(table){
+	document.querySelectorAll('.tsjippy.table').forEach(function(table){
 		//Get all heading elements
 		let tdLabels = [];
 		table.querySelectorAll('thead th').forEach((el,index) => {
@@ -322,7 +322,7 @@ function setTableHeight(){
 
 	// calculate how heigh the table should be
 	let footerHeight, headerHeight;
-	document.querySelectorAll('.sim-table').forEach( table => {
+	document.querySelectorAll('.tsjippy.table').forEach( table => {
 		let wrapper	= table.closest('.table-wrapper');
 		if(wrapper == null){
 			return;
@@ -336,7 +336,7 @@ function setTableHeight(){
 		}
 		
 		footerHeight	= 0;
-		wrapper.querySelectorAll('.sim-table-footer').forEach(el=> footerHeight	= el.offsetHeight);
+		wrapper.querySelectorAll('.tsjippy.table-footer').forEach(el=> footerHeight	= el.offsetHeight);
 
 		let px	= headerHeight + footerHeight + 40;
 		table.style.maxHeight	= `calc(100vh - ${px}px)`;
@@ -425,10 +425,10 @@ export const hideColumn	= async (target) => {
 		}
 
 		// store the hidden column in a var
-		if(sim.hidden	== undefined){
-			sim.hidden	= [];
+		if(tsjippy.hidden	== undefined){
+			tsjippy.hidden	= [];
 		}
-		sim.hidden.push(cell.cellIndex);
+		tsjippy.hidden.push(cell.cellIndex);
 
 		//show the reset button
 		cell.closest('.table-wrapper').querySelectorAll('.reset-col-vis').forEach(el => el.classList.remove('hidden'));

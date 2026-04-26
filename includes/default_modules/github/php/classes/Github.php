@@ -1,6 +1,6 @@
 <?php
-namespace SIM\GITHUB;
-use SIM;
+namespace TSJIPPY\GITHUB;
+use TSJIPPY;
 use Github\Exception\ApiLimitExceedException;
 use Github\Api\Repository\Releases;
 use Github\Api\Repository\Contents;
@@ -10,9 +10,9 @@ use WP_Error;
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 class Github{
-    public  $client;
-    public  $token;
-    public  $authenticated;
+    public $client;
+    public $token;
+    public $authenticated;
     public $repo;
     public $releases;
     public $contents;
@@ -46,7 +46,7 @@ class Github{
         }
 
         if(empty($this->token)){
-            $this->token    = SIM\getModuleOption(MODULE_SLUG, 'token');
+            $this->token    = SETTINGS['token'] ?? false;
 
             if(!$this->token){
                 return new WP_Error('Github', 'Please set a Github token');
@@ -66,7 +66,7 @@ class Github{
      *
      * @return	array|WP_Error	    Array containing information about the latest release or an WP_Error object
      */
-    public function getLatestRelease($author='tsjippy', $repo=SIM\PLUGINNAME, $force=false){
+    public function getLatestRelease($author='tsjippy', $repo=TSJIPPY\PLUGINNAME, $force=false){
         if(isset($_GET['update']) || $force){
             $release	= false;
         }else{
@@ -106,7 +106,7 @@ class Github{
 
             if(isset($e)){
                 if($e->getCode() != 404){
-                    SIM\printArray($e);
+                    TSJIPPY\printArray($e);
                 }
                 return new \WP_Error('update', $e->getMessage());
             }
@@ -124,7 +124,7 @@ class Github{
      * 
      * @return	true|WP_Error       True on success, WP_Error object on failure
      */
-    public function downloadFromGithub($author='Tsjippy', $repo=SIM\PLUGINNAME, $path='', $force=false){
+    public function downloadFromGithub($author='Tsjippy', $repo=TSJIPPY\PLUGINNAME, $path='', $force=false){
         if(empty($path)){
             return new WP_Error('Github', 'Path canot be empty');
         }
@@ -134,8 +134,8 @@ class Github{
         global $wp_filesystem;
 
         $oldVersion	= -1;
-        if (defined("SIM\\$repo\\MODULE_VERSION")) {
-            $oldVersion	= constant("SIM\\$repo\\MODULE_VERSION");
+        if (defined("TSJIPPY\\$repo\\MODULE_VERSION")) {
+            $oldVersion	= constant("TSJIPPY\\$repo\\MODULE_VERSION");
         }
 
         // Get latest release info
@@ -157,11 +157,11 @@ class Github{
                 try{
                     $zipContent = $this->releases->assets()->show($author, $repo, $release['assets'][0]['id'], true);
                 }catch (\Exception $e){
-                    SIM\printArray("Could not find asset with id {$release['assets'][0]['id']} for $author-$repo");
-                    SIM\printArray($release['assets']);
+                    TSJIPPY\printArray("Could not find asset with id {$release['assets'][0]['id']} for $author-$repo");
+                    TSJIPPY\printArray($release['assets']);
                 }
             }else{
-                SIM\printArray($e);
+                TSJIPPY\printArray($e);
             }
 
             if(!$zipContent){
@@ -177,7 +177,7 @@ class Github{
             require_once($tempFilePath);
 
             // Action should be defined in the file
-            do_action("sim-github-before-updating-module-$repo", $oldVersion, $release['tag_name']);
+            do_action("tsjippy-github-before-updating-module-$repo", $oldVersion, $release['tag_name']);
 
             // Remove the file
             wp_delete_file($tempFilePath);
@@ -205,7 +205,7 @@ class Github{
         $zip->close();
 
         if(!$result){
-            SIM\printArray("Unzip failed to $path");
+            TSJIPPY\printArray("Unzip failed to $path");
             
             return new WP_Error('Github', "Unzip failed for $repo" );
         }
@@ -221,7 +221,7 @@ class Github{
 
         // run the update action. We should do so with the updated files so we do it via a single event.
         if($oldVersion > 0){
-            wp_schedule_single_event(time(), 'sim-after-module-update', [$repo, $oldVersion]);
+            wp_schedule_single_event(time(), 'tsjippy-after-module-update', [$repo, $oldVersion]);
         }
 
         return true;
@@ -249,7 +249,7 @@ class Github{
         }catch (\Exception $e) {
             // 404 is not found
             if($e->getCode() != 404){
-                SIM\printArray($e);
+                TSJIPPY\printArray($e);
             }
 
             $content    = false;
@@ -263,12 +263,12 @@ class Github{
      *
      * @param   string  $pluginFilePath     The main file of the plugin you want to have info of
      * @param   string  $author             The github author
-     * @param   string  $repo               The github repository, default SIM\PLUGINNAME
+     * @param   string  $repo               The github repository, default TSJIPPY\PLUGINNAME
      * @param   array   $extraData          Extra data to include an array of active_installs, donate_link, rating, ratings banners, tested
      * 
      * @return  object                      The details object
      */
-    public function pluginData($pluginFilePath, $author, $repo=SIM\PLUGINNAME, $extraData=[]){
+    public function pluginData($pluginFilePath, $author, $repo=TSJIPPY\PLUGINNAME, $extraData=[]){
         if( ! function_exists('get_plugin_data') ){
             require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
         }
@@ -284,17 +284,17 @@ class Github{
         // Add available Sections
         $res->sections = [];
         foreach(['README', 'INSTALLATION', 'FAQ', 'CHANGELOG', 'screenshots', 'reviews', 'hooks'] as $item){
-            $content    = get_transient("sim-git-$item");
+            $content    = get_transient("tsjippy-git-$item");
             // if not in transient
             if($content === false){
                 $content    = $this->getFileContents($author, $repo, $item.'.md');
 
                 // Store for 24 hours
-                set_transient( "sim-git-$item", $content, DAY_IN_SECONDS );
+                set_transient( "tsjippy-git-$item", $content, DAY_IN_SECONDS );
             }
 
-            if(empty($content) && file_exists(SIM\PLUGINFOLDER."/$item.md")){
-                $content    = file_get_contents(SIM\PLUGINFOLDER."/$item.md");
+            if(empty($content) && file_exists(TSJIPPY\PLUGINFOLDER."/$item.md")){
+                $content    = file_get_contents(TSJIPPY\PLUGINFOLDER."/$item.md");
             }
 
             if(!empty($content)){
@@ -318,7 +318,7 @@ class Github{
         $res->requires          = $res->RequiresWP;
         //$res->requires_php      = $res->RequiresPhp;
         $res->homepage          = $res->PluginURI;
-        $res->slug              = 'sim';
+        $res->slug              = 'tsjippy';
 
         foreach($extraData  as $key=>$data){
             $res->$key  = $data;

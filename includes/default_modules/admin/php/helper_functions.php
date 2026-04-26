@@ -1,21 +1,8 @@
 <?php
-namespace SIM\ADMIN;
-use SIM;
+namespace TSJIPPY\ADMIN;
+use TSJIPPY;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
-
-function recurrenceSelector($curFreq){
-	$selected	= 'selected="selected"';
-	?>
-	<option value=''>---</option>
-	<option value='daily' <?php if($curFreq == 'daily'){echo esc_html($selected);}?>>Daily</option>
-	<option value='weekly' <?php if($curFreq == 'weekly'){echo esc_html($selected);}?>>Weekly</option>
-	<option value='monthly' <?php if($curFreq == 'monthly'){echo esc_html($selected);}?>>Monthly</option>
-	<option value='threemonthly' <?php if($curFreq == 'threemonthly'){echo esc_html($selected);}?>>Every quarter</option>
-	<option value='sixmonthly' <?php if($curFreq == 'sixmonthly'){echo esc_html($selected);}?>>Every half a year</option>
-	<option value='yearly' <?php if($curFreq == 'yearly'){echo esc_html($selected);}?>>Yearly</option>
-	<?php
-}
 
 function updatePlugin($pluginFile){
 	include_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
@@ -46,7 +33,7 @@ function installPlugin($pluginFile){
 		// Installed but not active
 		activate_plugin( $pluginFile);
 
-		SIM\storeInTransient('plugin', ['activated' => $pluginName]);
+		TSJIPPY\storeInTransient('plugin', ['activated' => $pluginName]);
 
 		return 'Activated';
 	}
@@ -87,7 +74,7 @@ function installPlugin($pluginFile){
 	
 	activate_plugin( $pluginFile);
 
-	SIM\storeInTransient('plugin', ['installed' => $pluginName]);
+	TSJIPPY\storeInTransient('plugin', ['installed' => $pluginName]);
 
 	session_write_close();
 
@@ -105,105 +92,4 @@ function printJs(){
 		});
 	</script>
 	<?php
-}
-
-function addElement($type, $parent='', $attributes=[], $textContent='', $position='beforeEnd'){
-	if(empty($parent)){
-		return;
-	}
-
-	if(empty($parent)){
-		$dom	= new \DOMDocument();
-		$parent	= $dom;
-	}
-
-	$dom	= $parent->ownerDocument ?? $parent;
-
-	try {
-		// Text content should not contain <br> tags, replace them with new line characters
-		$textContent = str_replace('<br>', "\n", $textContent);
-
-		$node = $dom->createElement($type, $textContent );
-	} catch (\DOMException $e) {
-		// Catch the specific DOMException
-		SIM\printArray("Caught DOMException: " . $e->getMessage() . " (Code: " . $e->getCode() . ")");
-	} catch (\Exception $e) {
-		// Catch any other general exceptions if needed
-		SIM\printArray( "Caught general Exception: " . $e->getMessage());
-	}
-
-	// Type should come first
-	if(!empty($attributes['type'])){
-		$attributes = ['type' => $attributes['type']] + $attributes;
-	}
-
-	foreach($attributes as $attribute => $value){
-		try{
-			$node->setAttribute($attribute, $value);
-		} catch (\DOMException $e) {
-			// Catch the specific DOMException
-			SIM\printArray("Caught DOMException for attribute '$attribute' " . $e->getMessage() . " (Code: " . $e->getCode() . ")");
-		} catch (\Exception $e) {
-			// Catch any other general exceptions if needed
-			SIM\printArray( "Caught general Exception: " . $e->getMessage());
-		}
-	}
-	
-	try{
-		if($position === 'afterBegin'){
-			$node		= $parent->insertBefore($node, $parent->firstChild);
-		}elseif($position === 'beforeBegin'){
-			$node		= $parent->parentNode->insertBefore($node, $parent);
-		}elseif($position === 'afterEnd'){
-			$node		= $parent->parentNode->insertBefore($node, $parent->nextSibling);
-		}else{
-			// Default to appending if position is not recognized
-			$node		= $parent->appendChild($node);
-		}
-	} catch (\DOMException $e) {
-		// Catch the specific DOMException
-		SIM\printArray("Caught DOMException: " . $e->getMessage() . " (Code: " . $e->getCode() . ")");
-	} catch (\Exception $e) {
-		// Catch any other general exceptions if needed
-		SIM\printArray( "Caught general Exception: " . $e->getMessage());
-	}
-
-	return $node;
-}
-
-/**
- * Converst a string of HTML into a DOM element and adds it to the parent element
- * @param	string		$html	The HTML string to convert
- * @param	DOMElement	$parent	The parent element to add the new element to
- * @param	string		$position	The position to add the new element (beforeEnd, afterBegin, beforeBegin, afterEnd)
- * 
- * @return	DOMElement|false	The newly created DOM element or false if the HTML string was empty
- */
-function addRawHtml($html, $parent, $position='beforeEnd'){
-	if(empty($html)){
-		return false;
-	}
-	
-	$html		= trim(force_balance_tags($html));
-
-	$tempDom 		= new \DOMDocument();
-	$tempDom->loadHTML($html);
-
-	// Import the node
-	foreach ($tempDom->getElementsByTagName('body')->item(0)->childNodes as $node) {
-		$node 		= $parent->ownerDocument->importNode($node, true);
-
-		if($position === 'afterBegin'){
-			$node		= $parent->insertBefore($node, $parent->firstChild);
-		}elseif($position === 'beforeBegin'){
-			$node		= $parent->parentNode->insertBefore($node, $parent);
-		}elseif($position === 'afterEnd'){
-			$node		= $parent->parentNode->insertBefore($node, $parent->nextSibling);
-		}else{
-			// Default to appending if position is not recognized
-			$node		= $parent->appendChild($node);
-		}
-	}
-
-	return $node;
 }

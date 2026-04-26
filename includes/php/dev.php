@@ -1,5 +1,5 @@
 <?php
-namespace SIM;
+namespace TSJIPPY;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -76,26 +76,10 @@ function disableAutoUpdate( $value, $item ) {
     return $value; // Preserve auto-update status for other plugins
 }
 
-/**
- * Module settings
- */
-// Blocks are assumed to be in the plugins folder.
-// So adjust the urls for the ones in the sim-modules folder
-add_filter( 'plugins_url', __NAMESPACE__.'\fixBlockUrls', 10, 3);
-function fixBlockUrls($url, $path, $plugin ){
-	if(str_contains($url, MODULESPATH)){
-		$url	= pathToUrl(MODULESPATH.explode(MODULESPATH, $url)[1]);
-	}
-	return $url;
-}
-
 //Shortcode for testing
 add_shortcode("test", function ($atts){
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
     require_once ABSPATH . 'wp-admin/install-helper.php';
-
-    global $wpdb;
-    global $Modules;
 
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
     require_once ABSPATH . 'wp-admin/install-helper.php';

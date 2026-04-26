@@ -1,5 +1,5 @@
 <?php
-namespace SIM;
+namespace TSJIPPY;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

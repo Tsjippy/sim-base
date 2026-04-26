@@ -1,6 +1,6 @@
 <?php
-namespace SIM\ADMIN;
-use SIM;
+namespace TSJIPPY\ADMIN;
+use TSJIPPY;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -23,22 +23,33 @@ class AdminMenu{
         $this->dom		= new \DOMDocument();
 
         // Register a custom menu page.
-        add_menu_page("SIM Plugin Settings", "SIM Settings", 'edit_others_posts', "sim", [$this, "mainMenu"]);
+        add_menu_page("Tsjippy Plugin Settings", "Tsjippy Settings", 'edit_others_posts', "tsjippy", [$this, "mainMenu"]);
 
         foreach(wp_get_active_and_valid_plugins() as $plugin){
-            if(
-                strpos($plugin, 'tsjippy-') !== false &&                    // Only add submenu for tsjippy plugins
-                strpos($plugin, 'tsjippy-shared-functionality') === false   // But not for the shared functionality plugin
-            ){
-                $slug = str_replace('tsjippy-', '', basename($plugin, '.php'));
+
+            // Only add submenu for tsjippy plugins
+            if( strpos($plugin, 'tsjippy-') !== false ){
+
+                // Add plugin menu links
+                add_filter("plugin_action_links_".plugin_basename($plugin), [$this, 'addExtraPluginLinks'], 10, 3);
+
+                // But not for the shared functionality plugin)
+                if(strpos($plugin, 'tsjippy-shared-functionality') !== false){
+                    continue;
+                }
+
+                $menuSLug   = basename($plugin, '.php');
+
+                $slug = str_replace('tsjippy-', '', $menuSLug);
                 $name = ucwords(str_replace('-', ' ', $slug));
+                $slug = str_replace('-', '', $slug);
     
                 add_submenu_page(
-                    'sim', 
+                    'tsjippy', 
                     $name, 
                     $name, 
                     "edit_others_posts", 
-                    "sim_$slug", 
+                    $menuSLug, 
                     function() use ( $name, $slug ){
                         $this->buildSubMenu($name, $slug);
                     }
@@ -48,12 +59,12 @@ class AdminMenu{
     }
     
     public function mainMenu(){
-        do_action('sim_plugin_actions');
+        do_action('tsjippy_plugin_actions');
     
         ?>
         <div class="wrap">
-            <h1>SIM Plugin Settings</h1>
-            <p>Welcome to the SIM Plugin Settings page!</p>
+            <h1>Tsjippy Plugin Settings</h1>
+            <p>Welcome to the Tsjippy Plugin Settings page!</p>
         </div>
         <?php
     }
@@ -83,7 +94,7 @@ class AdminMenu{
         }else{
             $position   = 'beforeEnd';   
         }
-        return addElement('button', $this->tabLinkButtonsWrapper, $attributes, ucfirst($slug), $position);
+        return TSJIPPY\addElement('button', $this->tabLinkButtonsWrapper, $attributes, ucfirst($slug), $position);
     }
 
     /**
@@ -106,8 +117,8 @@ class AdminMenu{
             $attributes['class'] .= ' hidden';
         }
 
-        $node    = addElement('div', $this->mainDiv, $attributes);
-        addElement('h2', $node, [], $name);
+        $node    = TSJIPPY\addElement('div', $this->mainDiv, $attributes);
+        TSJIPPY\addElement('h2', $node, [], $name);
 
         return $node;
     }
@@ -120,40 +131,45 @@ class AdminMenu{
             return '';
         }
 
-        $this->settings	= get_option("sim_{$slug}_settings", []);
+        $this->settings	= get_option("tsjippy_{$slug}_settings", []);
 
-        $message	    = $this->handlePost();
-
-        $this->mainDiv	= addElement('div', $this->dom, ['class' => 'plugin-settings']);
-        addElement('h1', $this->mainDiv, [], "$name plugin settings");
-
-        $this->tabLinkButtonsWrapper	= addElement('div', $this->mainDiv, ['class' => 'tablink-wrapper']);
+        $this->mainDiv	= TSJIPPY\addElement('div', $this->dom, ['class' => 'plugin-settings']);
+        TSJIPPY\addElement('h1', $this->mainDiv, [], "$name plugin settings");
         
-        $className          = "SIM\\" . strtoupper($slug) . "\\AdminMenu";
-        $subMenu            = new $className($this->settings, $name);
-            
-        $settingsTab        = $this->settingsTab($subMenu, $slug, $name);
-        $emailSettingsTab   = $this->emailSettingsTab($subMenu, $slug, $name);
-        $dataTab            = $this->dataTab($subMenu, $slug, $name);
-        $functionsTab       = $this->functionsTab($subMenu, $slug, $name);
+        $className          = "TSJIPPY\\" . strtoupper($slug) . "\\AdminMenu";
 
-        // Only add a tablink button for the settings if there is at least on other tab
-        if($emailSettingsTab || $dataTab || $functionsTab){
-            $this->tabLinkButton('settings');
-        }
+        if(class_exists($className)){
+            $this->tabLinkButtonsWrapper	= TSJIPPY\addElement('div', $this->mainDiv, ['class' => 'tablink-wrapper']);
 
-        if($this->tab == 'settings'){
-            $parent = $settingsTab;
-        }elseif($this->tab == 'emails'){
-            $parent = $emailSettingsTab;
-        }elseif($this->tab == 'data'){
-            $parent = $dataTab;
-        }elseif($this->tab == 'functions'){
-            $parent = $functionsTab;
-        }
+            $subMenu            = new $className($this->settings, $name);
 
-        if(!empty($message)){
-            addRawHtml($message, $parent, 'afterBegin');
+            $message	        = $subMenu->handlePost();
+                
+            $settingsTab        = $this->settingsTab($subMenu, $slug, $name);
+            $emailSettingsTab   = $this->emailSettingsTab($subMenu, $slug, $name);
+            $dataTab            = $this->dataTab($subMenu, $slug, $name);
+            $functionsTab       = $this->functionsTab($subMenu, $slug, $name);
+
+            // Only add a tablink button for the settings if there is at least on other tab
+            if($emailSettingsTab || $dataTab || $functionsTab){
+                $this->tabLinkButton('settings');
+            }
+
+            if($this->tab == 'settings'){
+                $parent = $settingsTab;
+            }elseif($this->tab == 'emails'){
+                $parent = $emailSettingsTab;
+            }elseif($this->tab == 'data'){
+                $parent = $dataTab;
+            }elseif($this->tab == 'functions'){
+                $parent = $functionsTab;
+            }
+
+            if(!empty($message)){
+                TSJIPPY\addRawHtml($message, $parent, 'afterBegin');
+            }
+        }else{
+            TSJIPPY\addElement('div', $this->mainDiv, [], 'No special settings needed for this plugin');
         }
 
         echo $this->dom->saveHtml();
@@ -162,18 +178,19 @@ class AdminMenu{
     public function settingsTab($subMenu, $slug, $name){
         $node   = $this->mainNode('settings', 'Settings');
 
-        $form   = addElement('form', $node, ['method' => "post"]);
-        addElement('input', $form, ['type' => "hidden", 'name' => "plugin", 'value' => $slug,  'class' => 'no-reset']);
-        addElement('input', $form, ['type' => "hidden", 'class' => 'no-reset', 'name' => "nonce", 'value' => wp_create_nonce('plugin-settings')]);
+        $form   = TSJIPPY\addElement('form', $node, ['method' => "post"]);
+        TSJIPPY\addElement('input', $form, ['type' => "hidden", 'name' => "plugin", 'value' => $slug,  'class' => 'no-reset']);
+        TSJIPPY\addElement('input', $form, ['type' => "hidden", 'class' => 'no-reset', 'name' => "nonce", 'value' => wp_create_nonce('plugin-settings')]);
 
-        $wrapper    = addElement('div', $form, ['class' => 'options']);
+        $wrapper    = TSJIPPY\addElement('div', $form, ['class' => 'options']);
 
         $hasSettings    = $subMenu->settings($wrapper);
 
         if($hasSettings){
-            addElement('input', $form, ['type' => "submit", 'value' => "Save $name settings"]);
+            TSJIPPY\addElement('br', $form);
+            TSJIPPY\addElement('input', $form, ['type' => "submit", 'value' => "Save $name settings"]);
         }else{
-            addElement('div', $wrapper, [], 'No special settings needed for this plugin');
+            TSJIPPY\addElement('div', $wrapper, [], 'No special settings needed for this plugin');
         }
 
         return $node;
@@ -182,13 +199,15 @@ class AdminMenu{
     public function emailSettingsTab($subMenu, $slug, $name){
         $node    = $this->mainNode('emails', 'E-mail Settings');
 
-        $form   = addElement('form', $node, ['method' => "post"]);
-        addElement('input', $form, ['type' => "hidden", 'name' => "plugin", 'value' => $slug,  'class' => 'no-reset']);
+        $form   = TSJIPPY\addElement('form', $node, ['method' => "post"]);
+        TSJIPPY\addElement('input', $form, ['type' => "hidden", 'name' => "plugin", 'value' => $slug,  'class' => 'no-reset']);
 
         $hasEmails  = $subMenu->emails($form);
 
         if($hasEmails){
-            addElement('input', $form, ['type' => "submit", 'value' => "Save $name e-mail settings"]);
+            TSJIPPY\addElement('br', $form);
+            
+            TSJIPPY\addElement('input', $form, ['type' => "submit", 'value' => "Save $name e-mail settings"]);
 
             $this->tabLinkButton('emails');
 
@@ -228,92 +247,59 @@ class AdminMenu{
         return $node;
     }
 
-    public function handlePost(){
-        $message	= apply_filters('sim-admin-settings-post', '', $this->settings);
+    //Add setting link to plugin page
+    function addExtraPluginLinks($links, $plugin, $data) {
+        //http://plugin-prepare.local/wp-admin/admin.php?page=tsjippy
+        //http://plugin-prepare.local/wp-admin/admin.php?page=tsjippy_bookings
         
-        // do some checks
-        if(
-            !isset($_POST['plugin']) ||
-            !isset($_POST['nonce']) ||
-            !wp_verify_nonce($_POST['nonce'], 'plugin-settings' )
-        ){
-            return '';
-        }
+        // Settings Link
+        $slug           = basename($plugin, '.php');
 
-        if(isset($_POST['emails'])){
-            $message	.= "<div class='success'>E-mail settings succesfully saved</div>";
-            $this->saveEmails();
+        if($slug == 'tsjippy-shared-functionality'){
+            $page   = 'tsjippy';
         }else{
-            $message	.= "<div class='success'>Settings succesfully saved</div>";
-            $this->saveSettings();
+            $page   = basename($plugin, '.php');
         }
-        
-        // Build the message
-        $plugin	= SIM\getFromTransient('plugin');
-        if(isset($plugin)){
-            if(isset($plugin['installed'])){
-                $name		 = ucfirst($plugin['installed']);
-                $message	.= "<br><br>Dependend plugin '$name' succesfully installed and activated";
-            }elseif(isset($plugin['activated'])){
-                $name		 = ucfirst($plugin['activated']);
-                $message	.= "<br><br>Dependend plugin '$name' succesfully activated";
+
+        $url            = admin_url( "admin.php?page=$page" );
+        $link           = "<a href='$url'>Settings</a>";
+        array_unshift($links, $link);
+
+        // Details link
+        $url            = admin_url( "plugin-install.php?tab=plugin-information&plugin=$slug&section=changelog" );
+        $link           = "<a href='$url'>Details</a>";
+        array_unshift($links, $link);
+
+        //TO DO: implement Pro
+        $pro = false;
+        if($pro){
+
+            // Update links
+            if(isset($_GET['update']) && $_GET['update'] == 'check'){
+                // Reset updates cache
+                delete_site_transient( 'update_plugins' );
+                delete_transient('tsjippy-git-release');
+
+                wp_update_plugins();
+
+                $updates    = get_site_transient( 'update_plugins' );
+                if(is_wp_error($updates)){
+                    $link = "<div class='error'>".$updates->get_error_message()."</div>";
+                }elseif(isset($updates->response[$plugin])){
+                    $url    = self_admin_url( 'update.php?action=update-selected&amp;plugin=' . urlencode( $plugin ) );
+                    $url    = wp_nonce_url( $url, 'bulk-update-plugins' );
+                    $link   = "<a href='$url' class='update-link'>Update to ".$updates->response[$plugin]->new_version."</a>";
+                }else{
+                    $url   = admin_url( 'plugins.php?update=check' );
+                    $link  = "Up to date <a href='$url'>Check again</a>";
+                }
+            }else{
+                $url   = admin_url( 'plugins.php?update=check' );
+                $link  = "<a href='$url'>Check for update</a>";
             }
-            SIM\deleteFromTransient('plugin');
-        }
-        
-        return $message;
-    }
-
-    /**
-    * Saves plugins settings from $_POST
-    */
-    public function saveSettings(){
-        if(
-            !isset($_POST['plugin']) ||
-            !isset($_POST['nonce']) ||
-            !wp_verify_nonce($_POST['nonce'], 'plugin-settings' )
-        ){
-            return '';
+            array_unshift($links, $link);
         }
 
-        $slug	    = sanitize_key(wp_unslash($_POST['plugin']));
-        $options	= $_POST;
-        unset($options['plugin']);
-        unset($options['nonce']);
-
-        foreach($options as &$option){
-            $option = SIM\deslash($option);
-        }
-
-        /**
-         * Filters the settings of this sub-plugin
-         * @param   array   $options    The options to save, after being sanitized
-         * @param   array   $settings   The current saved settings, before saving the new ones
-         * @return  array                The options to save, after being processed by the filter
-         */
-        $this->settings	= apply_filters("sim_plugin_{$slug}_after_save", $options, get_option("sim_{$slug}_settings", []));
-
-        update_option("sim_{$slug}_settings", $this->settings);
-    }
-
-    public function saveEmails(){
-        if(
-            !isset($_POST['plugin']) ||
-            !isset($_POST['nonce']) ||
-            !isset($_POST['emails']) ||
-            !wp_verify_nonce($_POST['nonce'], 'plugin-settings' )
-        ){
-            return '';
-        }
-
-        $slug	        = sanitize_text_field($_POST['plugin']);
-        $emailSettings	= $_POST['emails'];
-        unset($emailSettings['plugin']);
-
-        foreach($emailSettings as &$emailSetting){
-            $emailSetting = SIM\deslash($emailSetting);
-        }
-
-        update_option("sim_{$slug}_emails", $emailSettings);
+        return $links;
     }
 }

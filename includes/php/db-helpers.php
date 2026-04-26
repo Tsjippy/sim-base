@@ -1,5 +1,5 @@
 <?php
-namespace SIM;
+namespace TSJIPPY;
 
 use WP_Error;
 
@@ -146,11 +146,11 @@ function deleteFromTransient($key){
 }
 
 /**
- 	* Get a value from the db, or cache
-	* @param string      $cacheKey  The key to identify the cache value
- 	* @param string      $query   	Query statement with `sprintf()`-like placeholders.
-	* @param mixed       ...$args 	Variables to substitute into the query's placeholders if being called with individual arguments.
-	*/
+* Get a value from the db, or cache
+* @param string      $cacheKey  The key to identify the cache value
+* @param string      $query   	Query statement with `sprintf()`-like placeholders.
+* @param mixed       ...$args 	Variables to substitute into the query's placeholders if being called with individual arguments.
+*/
 function getFromDb($cacheKey, $query, ...$args ){
 	global $wpdb;
 

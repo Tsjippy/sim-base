@@ -1,6 +1,6 @@
 <?php
-namespace SIM\ADMIN;
-use SIM;
+namespace TSJIPPY\ADMIN;
+use TSJIPPY;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -54,7 +54,7 @@ function createDefaultPage($options, $optionKey, $title, $content, $oldOptions, 
     $pageId 	= wp_insert_post( $post, true, false);
     $pages[]    = $pageId;
 
-    //Store page id in module options
+    //Store page id in plugin options
     $options[$optionKey]	= $pages;
 
     // Do not require page updates
@@ -66,17 +66,18 @@ function createDefaultPage($options, $optionKey, $title, $content, $oldOptions, 
 /**
  * Checks if all pages are valid in the default pages option array and returns the first valid one as a link
  *
- * @param   string  $moduleSlug     The slug of the module
- * @param   string  $optionKey      The key in the module option array
+ * @param   string  $slug           The slug of the plugin
+ * @param   string  $optionKey      The key in the plugin option array
  *
  * @return  string                  The url
  */
-function getDefaultPageLink($moduleSlug, $optionKey){
-    global $Modules;
+function getDefaultPageLink($slug, $optionKey){
 
     $url		= '';
 
-	$pageIds	= SIM\getModuleOption($moduleSlug, $optionKey);
+    $settings   = get_option("tsjippy_{$slug}_settings");
+
+	$pageIds	= $settings[$optionKey] ?? false;
 	if(!$pageIds){
         return false;
     }
@@ -93,9 +94,9 @@ function getDefaultPageLink($moduleSlug, $optionKey){
 			$url		= get_permalink($pageIds[0]);
 		}
 
-        if($Modules[$moduleSlug][$optionKey] != $pageIds){
-		    $Modules[$moduleSlug][$optionKey]	= $pageIds;
-		    update_option('sim_modules', $Modules);
+        if($settings[$optionKey] != $pageIds){
+		    $settings[$optionKey]	= $pageIds;
+		    update_option("tsjippy_{$slug}_settings", $settings);
         }
 	}
 

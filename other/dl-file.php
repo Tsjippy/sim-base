@@ -45,7 +45,7 @@ if(!empty($_SERVER['REMOTE_ADDR']) && in_array($_SERVER['REMOTE_ADDR'], $whiteli
 	if (str_contains($fileName, 'account-statements')) {
 		$partnerName		= $username;
 		
-		$family			= new SIM\FAMILY\Family();
+		$family			= new TSJIPPY\FAMILY\Family();
 		$partner		= $family->getPartner($user);
 		if($partner){
 			//The partners name

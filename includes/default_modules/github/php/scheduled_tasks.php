@@ -1,28 +1,20 @@
 <?php
-namespace SIM\GITHUB;
-use SIM;
+namespace TSJIPPY\GITHUB;
+use TSJIPPY;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 add_action('init', __NAMESPACE__.'\init');
 function init(){
 	//add action for use in scheduled task
-	add_action( 'update_modules_action', __NAMESPACE__.'\checkForModuleUpdates' );
+	add_action( 'update_plugin_action', __NAMESPACE__.'\checkForPluginUpdates' );
 }
 
 function scheduleTasks(){
-    SIM\scheduleTask('update_modules_action', 'daily');
+    TSJIPPY\scheduleTask('update_plugin_action', 'daily');
 }
 
-// Remove scheduled tasks upon module deactivatio
-add_action('sim_module_deactivated', __NAMESPACE__.'\onDeactivation');
-function onDeactivation($options){
-	wp_clear_scheduled_hook( 'update_modules_action' );
-}
-
-function checkForModuleUpdates(){
-	global $moduleDirs;
-	global $defaultModules;
+function checkForPluginUpdates(){
 
 	// DO not run on localhost
 	if(wp_get_environment_type() === 'local'){
@@ -30,46 +22,47 @@ function checkForModuleUpdates(){
 	}
 
 	// update the plugin first
-	$url    = self_admin_url( 'update.php?action=upgrade-plugin&plugin=' . urlencode( SIM\PLUGINNAME ) );
+	$url    = self_admin_url( 'update.php?action=upgrade-plugin&plugin=' . urlencode( TSJIPPY\PLUGINNAME ) );
     $url    = wp_nonce_url( $url, 'bulk-update-plugins' );
 	$page 	= file_get_contents($url);
 
-	SIM\printArray($url);
-
 	// Now check for module updates
 	$github	= new Github();
-	foreach($moduleDirs as $module => $path){
-		// Default module
-		if(in_array($module, $defaultModules)){
+	foreach(wp_get_active_and_valid_plugins() as $plugin){
+
+		if(strpos($plugin, 'tsjippy-') === false ){
 			continue;
-		}
+        }
+
+		$slug   	= basename($plugin, '.php');
+		$nameSpace	= strtoupper($slug);
 
 		// inactive module
-		if( ! defined("SIM\\$module\\MODULE_VERSION") ){
-			SIM\printArray("Constant does not exist for $module ");
+		if( ! defined("TSJIPPY\\$nameSpace\\PLUGINVERSION") ){
+			TSJIPPY\printArray("Constant does not exist for $slug ");
 			continue;
 		}
 
 		$oldVersion	= false;
 
-		$oldVersion	= constant("SIM\\$module\\MODULE_VERSION");
+		$oldVersion	= constant("TSJIPPY\\$nameSpace\\PLUGINVERSION");
 		
-		$release	= $github->getLatestRelease('Tsjippy', $module, true);
+		$release	= $github->getLatestRelease('Tsjippy', $slug, true);
 
 		if(is_wp_error($release)){
-			SIM\printArray("Error checking for update for module $module: ");
-			SIM\printArray($release);
+			TSJIPPY\printArray("Error checking for update for plugin $slug: ");
+			TSJIPPY\printArray($release);
 			continue;
 		}
 
 		$newVersion	= $release['tag_name'];
 
 		// Download the new version
-		//SIM\printArray("Name: $module. Current Version $oldVersion, new version $newVersion. ");
+		//TSJIPPY\printArray("Name: $module. Current Version $oldVersion, new version $newVersion. ");
 		if(version_compare($newVersion, $oldVersion)){
-			SIM\printArray("Updating $module");
+			TSJIPPY\printArray("Updating $slug");
 			
-            $github->downloadFromGithub('Tsjippy', $module, $path);
+            $github->downloadFromGithub('Tsjippy', $slug);
         }
 	}
 }

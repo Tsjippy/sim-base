@@ -1,6 +1,6 @@
 <?php
-namespace SIM\GITHUB;
-use SIM;
+namespace TSJIPPY\GITHUB;
+use TSJIPPY;
 use Github\Exception\ApiLimitExceedException;
 use Github\Client;
 
@@ -15,19 +15,19 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 add_filter( 'plugins_api', __NAMESPACE__.'\customDescription', 10, 3);
 function customDescription( $res, $action, $args ) {
 	// do nothing if you're not getting plugin information or this is not our plugin
-	if( 'plugin_information' !== $action || SIM\PLUGINNAME !== $args->slug) {
+	if( 'plugin_information' !== $action || TSJIPPY\PLUGINSLUG !== $args->slug) {
 		return $res;
 	}
 
 	$github 	    		= new Github();
-	return $github->pluginData(SIM\PLUGIN_PATH, 'Tsjippy', 'tsjippy-shared-functionality', [
+	return $github->pluginData(TSJIPPY\PLUGINPATH, 'Tsjippy', 'tsjippy-shared-functionality', [
 		'active_installs'	=> 2, 
 		'donate_link'		=> 'harmseninnigeria.nl', 
 		'rating'			=> 5, 
 		'ratings'			=> [4,5,5,5,5,5], 
 		'banners'			=> [
-			'high'	=> SIM\PICTURESURL."/banner-1544x500.jpg",
-			'low'	=> SIM\PICTURESURL."/banner-772x250.jpg"
+			'high'	=> TSJIPPY\PICTURESURL."/banner-1544x500.jpg",
+			'low'	=> TSJIPPY\PICTURESURL."/banner-772x250.jpg"
 		], 
 		'tested'			=> '6.6.2'		
 	]);
@@ -40,7 +40,7 @@ add_filter( 'pre_set_site_transient_update_plugins', __NAMESPACE__.'\showPluginU
 function showPluginUpdate($transient){
 	$github			= new Github();
 
-	$item			= $github->getVersionInfo(SIM\PLUGIN_PATH);
+	$item			= $github->getVersionInfo(TSJIPPY\PLUGIN_PATH);
 
 	if(!is_object($item)){
 		return $transient;
@@ -48,16 +48,10 @@ function showPluginUpdate($transient){
 
 	// Git has a newer version
 	if(isset($item->new_version)){
-		$transient->response[SIM\PLUGIN]	= $item;
+		$transient->response[TSJIPPY\PLUGIN]	= $item;
 	}else{
-		$transient->no_update[SIM\PLUGIN]	= $item;
+		$transient->no_update[TSJIPPY\PLUGIN]	= $item;
 	}
 
 	return $transient;
-}
-
-add_action('sim-after-module-update', __NAMESPACE__.'\afterModuleUpdate', 10, 2);
-function afterModuleUpdate($repo, $oldVersion){
-	SIM\printArray($oldVersion);
-	do_action("sim_{$repo}_module_update", $oldVersion);
 }

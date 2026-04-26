@@ -1,22 +1,22 @@
 <?php
-namespace SIM\ADMIN;
-use SIM;
+namespace TSJIPPY\ADMIN;
+use TSJIPPY;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 //load js and css
 add_action( 'admin_enqueue_scripts', __NAMESPACE__.'\loadAdminAssets');
 function loadAdminAssets($hook) {
-	//Only load on sim settings pages
-	if(!str_contains($hook, '_sim')) {
+	//Only load on tsjippy settings pages
+	if(!str_contains($hook, '_tsjippy')) {
 		return;
 	}
 
-	wp_enqueue_style('sim_admin_css', plugins_url('css/admin.min.css', __DIR__), array(), SIM\PLUGINVERSION);
-	wp_enqueue_script('sim_admin_js', plugins_url('js/admin.min.js', __DIR__), array() , SIM\PLUGINVERSION, true);
+	wp_enqueue_style('tsjippy_admin_css', plugins_url('css/admin.min.css', __DIR__), array(), TSJIPPY\PLUGINVERSION);
+	wp_enqueue_script('tsjippy_admin_js', plugins_url('js/admin.min.js', __DIR__), array() , TSJIPPY\PLUGINVERSION, true);
 
-	wp_localize_script( 'sim_admin_js',
-		'sim',
+	wp_localize_script( 'tsjippy_admin_js',
+		'tsjippy',
 		array(
 			'ajaxUrl' 		=> admin_url( 'admin-ajax.php' ),
 			"userId"		=> wp_get_current_user()->ID,

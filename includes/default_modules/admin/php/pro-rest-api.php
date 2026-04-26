@@ -1,6 +1,6 @@
 <?php
-namespace SIM\ADMIN;
-use SIM;
+namespace TSJIPPY\ADMIN;
+use TSJIPPY;
 
 add_action( 'rest_api_init', function () {
 	//Route for first names
@@ -12,7 +12,7 @@ add_action( 'rest_api_init', function () {
 			'callback'				=> __NAMESPACE__.'\getChangelog',
 			'permission_callback' 	=> '__return_true',
             'args'					=> array(
-				'module-name'		=> array(
+				'plugin-name'		=> array(
 					'required'	=> true
 				)
 			)
@@ -21,15 +21,15 @@ add_action( 'rest_api_init', function () {
 });
 
 function getChangelog(){
-	if(empty($_POST['module-name'])){
+	if(empty($_POST['plugin-name'])){
 		return;
 	}
 
-    $github		= new SIM\GITHUB\Github();
+    $github		= new TSJIPPY\GITHUB\Github();
 
-    $moduleName = sanitize_text_field(wp_unslash($_POST['module-name']));
+    $pluginName = sanitize_text_field(wp_unslash($_POST['plugin-name']));
 
-    $release    = $github->getFileContents('tsjippy', $moduleName, 'CHANGELOG.md');
+    $release    = $github->getFileContents('tsjippy', $pluginName, 'CHANGELOG.md');
     if($release){
         return $release;
     }

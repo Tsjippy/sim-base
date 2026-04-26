@@ -1,7 +1,6 @@
 
 import { __ } from '@wordpress/i18n';
 import {useBlockProps, InspectorControls} from "@wordpress/block-editor";
-import './editor.scss';
 import {Panel, PanelBody, ToggleControl, Spinner} from "@wordpress/components";
 import { useSelect } from '@wordpress/data';
 import { store as coreDataStore } from '@wordpress/core-data';
@@ -43,7 +42,7 @@ const Edit = ({attributes, setAttributes}) => {
 		}
 	
 		if ( ! categories?.length ) {
-			return <div> {__('No categories found', 'sim')}</div>;
+			return <div> {__('No categories found', 'tsjippy')}</div>;
 		}
 		
 		return (
@@ -65,7 +64,7 @@ const Edit = ({attributes, setAttributes}) => {
 				<Panel>
 					<PanelBody>
 						<ToggleControl
-                            label={__('Show categories count', 'sim')}
+                            label={__('Show categories count', 'tsjippy')}
                             checked={!!attributes.count}
                             onChange={() => setAttributes({ count: !attributes.count })}
                         />

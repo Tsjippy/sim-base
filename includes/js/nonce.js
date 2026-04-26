@@ -1,11 +1,11 @@
 async function getNonce(){
     let formData	= new FormData();
-    formData.append('_wpnonce', sim.restNonce);
+    formData.append('_wpnonce', tsjippy.restNonce);
 
     let result;
     try{
         result = await fetch(
-            `${sim.baseUrl}/wp-json${sim.restApiPrefix}/fetch_nonce`,
+            `${tsjippy.baseUrl}/wp-json${tsjippy.restApiPrefix}/fetch_nonce`,
             {
                 method: 'POST',
                 credentials: 'same-origin',
@@ -20,7 +20,7 @@ async function getNonce(){
 
     let json		        = JSON.parse(response);
 
-    window.sim.restNonce    = json;
+    window.tsjippy.restNonce    = json;
 }
 
 getNonce();

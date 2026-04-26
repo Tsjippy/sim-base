@@ -1,6 +1,6 @@
 <?php
-namespace SIM\FAMILY;
-use SIM;
+namespace TSJIPPY\FAMILY;
+use TSJIPPY;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -19,12 +19,12 @@ class Family{
     public function __construct() {
         global $wpdb;
 
-        $this->tableName        = $wpdb->prefix . 'sim_family';
-        $this->metaTableName    = $wpdb->prefix . 'sim_family_meta';
+        $this->tableName        = $wpdb->prefix . 'tsjippy_family';
+        $this->metaTableName    = $wpdb->prefix . 'tsjippy_family_meta';
     }
 
     /**
-	 * Creates the tables for this module
+	 * Creates the tables for this plugin
 	 */
 	public function createDbTables(){
 		if ( !function_exists( 'maybe_create_table' ) ) {
@@ -74,7 +74,7 @@ class Family{
             $userId = $userId->ID;
         }
 
-        $familyId = SIM\getFromDb("familyId-$userId", "select family_id from %i where user_id_1=%d OR user_id_2=%d LIMIT 1", $this->tableName, $userId, $userId);
+        $familyId = TSJIPPY\getFromDb("familyId-$userId", "select family_id from %i where user_id_1=%d OR user_id_2=%d LIMIT 1", $this->tableName, $userId, $userId);
 
         return $familyId;
     }
@@ -106,7 +106,7 @@ class Family{
             $userId = $userId->ID;
         }
 
-        $results = SIM\getFromDb("family-$userId", "select * from %i where user_id_1=%d or user_id_2=%d", $this->tableName, $userId, $userId);
+        $results = TSJIPPY\getFromDb("family-$userId", "select * from %i where user_id_1=%d or user_id_2=%d", $this->tableName, $userId, $userId);
 
         if(is_wp_error($results)){
             return $results;
@@ -164,7 +164,7 @@ class Family{
             $userId = $userId->ID;
         }
 
-        $results = SIM\getFromDb("children-$userId", "select user_id_2 from %i where user_id_1=%d AND relationship='child'", $this->tableName, $userId);
+        $results = TSJIPPY\getFromDb("children-$userId", "select user_id_2 from %i where user_id_1=%d AND relationship='child'", $this->tableName, $userId);
 
         return $results;
     }
@@ -186,7 +186,7 @@ class Family{
         $siblings   = [];
 
         // Query all relations marked as siblings
-        $results    = SIM\getFromDb("siblings-$userId", "select * from %i where (user_id_1=%d OR user_id_2=%d) AND relationship='sibling'", $this->tableName, $userId, $userId);
+        $results    = TSJIPPY\getFromDb("siblings-$userId", "select * from %i where (user_id_1=%d OR user_id_2=%d) AND relationship='sibling'", $this->tableName, $userId, $userId);
 
         if(is_wp_error($results)){
             return $results;
@@ -202,7 +202,7 @@ class Family{
 
         // Get all the users with the same parent
         $subQuery   = $wpdb->prepare("select user_id_1 from %i where user_id_2=%d AND relationship='child' LIMIT 1", $this->tableName, $userId);
-        $results    = SIM\getFromDb("siblings-$userId", "select user_id_2 from %i where user_id_1=(%s) AND relationship='child'", $this->tableName, $subQuery);
+        $results    = TSJIPPY\getFromDb("siblings-$userId", "select user_id_2 from %i where user_id_1=(%s) AND relationship='child'", $this->tableName, $subQuery);
 
         if(is_wp_error($results)){
             return $results;
@@ -240,7 +240,7 @@ class Family{
             $userId = $userId->ID;
         }
 
-        $results    = SIM\getFromDb("parents-$userId", "select user_id_1 from %i where user_id_2=%d AND relationship='child'", $this->tableName, $userId);
+        $results    = TSJIPPY\getFromDb("parents-$userId", "select user_id_1 from %i where user_id_2=%d AND relationship='child'", $this->tableName, $userId);
 
         if(is_wp_error($results) || empty($results)){
             return $results;
@@ -273,7 +273,7 @@ class Family{
             $userId = $userId->ID;
         }
 
-        $results    = SIM\getFromDb("partner-$userId", "select * from %i where (user_id_1=%d OR user_id_2=%d) AND relationship='partner'", $this->tableName, $userId, $userId);
+        $results    = TSJIPPY\getFromDb("partner-$userId", "select * from %i where (user_id_1=%d OR user_id_2=%d) AND relationship='partner'", $this->tableName, $userId, $userId);
 
         if(is_wp_error($results)){
             return $results;
@@ -327,7 +327,7 @@ class Family{
         }
 
         if(!empty($key)){
-            $value    = SIM\getFromDb("$userId-$key", "select value from %i where family_id=%d AND `key`=%s", $this->metaTableName, $this->getFamilyId($userId), $key);
+            $value    = TSJIPPY\getFromDb("$userId-$key", "select value from %i where family_id=%d AND `key`=%s", $this->metaTableName, $this->getFamilyId($userId), $key);
 
             if(is_wp_error($value)){
                 return $value;
@@ -336,7 +336,7 @@ class Family{
             return $value;
         }
 
-        $results    = SIM\getFromDb("$userId-familymetas", "select * from %i where family_id=%d", $this->metaTableName, $this->getFamilyId($userId));
+        $results    = TSJIPPY\getFromDb("$userId-familymetas", "select * from %i where family_id=%d", $this->metaTableName, $this->getFamilyId($userId));
 
         if(is_wp_error($results)){
             return $results;

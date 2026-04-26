@@ -1,5 +1,5 @@
 <?php
-namespace SIM;
+namespace TSJIPPY;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -28,7 +28,7 @@ function extraUserRoles( $user ) {
                         <input type='checkbox' name='roles[<?php esc_html($role);?>]' value='<?php echo esc_attr($role);?>' <?php echo esc_html($checked);?>>
                         <?php echo esc_html($name['name']);?>
                         <i>
-                            <?php echo esc_html(apply_filters('sim_role_description', '', $role));?>
+                            <?php echo esc_html(apply_filters('tsjippy_role_description', '', $role));?>
                         </i>
                     </label><br>
                     <?php
@@ -55,7 +55,7 @@ function saveExtraUserRoles( $userId, $newRoles=[] ) {
         $newRoles = array_map('sanitize_text_field', (array)$_POST['roles']);
 	}
 
-    do_action('sim_roles_changed', $user, $newRoles);
+    do_action('tsjippy_roles_changed', $user, $newRoles);
     
     //add new roles
     foreach($newRoles as $key => $role){
@@ -73,7 +73,7 @@ function saveExtraUserRoles( $userId, $newRoles=[] ) {
     }
 }
 
-add_filter('sim_role_description', __NAMESPACE__.'\roleDescriptions', 10, 2);
+add_filter('tsjippy_role_description', __NAMESPACE__.'\roleDescriptions', 10, 2);
 function roleDescriptions($description, $role){
     switch($role){
         case 'administrator':

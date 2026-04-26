@@ -17,7 +17,7 @@ const Edit = ({attributes, setAttributes, context}) => {
 			async function getHtml(){
 				setHtml( < Spinner /> );
 				const response = await apiFetch({
-					path: sim.restApiPrefix+'/show_children',
+					path: tsjippy.restApiPrefix+'/show_children',
 					method: 'POST',
 					data: { 
 						title: title,
@@ -41,7 +41,7 @@ const Edit = ({attributes, setAttributes, context}) => {
 				<Panel>
 					<PanelBody>
 						<ToggleControl
-                            label={__('Show title', 'sim')}
+                            label={__('Show title', 'tsjippy')}
                             checked={!!attributes.title}
                             onChange={() => setAttributes({ title: !attributes.title })}
                         />
@@ -69,17 +69,17 @@ const Edit = ({attributes, setAttributes, context}) => {
 							__nextHasNoMarginBottom
 						/>
 						<ToggleControl
-                            label={__('Show grandchildren', 'sim')}
+                            label={__('Show grandchildren', 'tsjippy')}
                             checked={!!attributes.grandchildren}
                             onChange={() => setAttributes({ grandchildren: !attributes.grandchildren })}
                         />
 						<ToggleControl
-                            label={__('Show parents', 'sim')}
+                            label={__('Show parents', 'tsjippy')}
                             checked={!!attributes.parents}
                             onChange={() => setAttributes({ parents: !attributes.parents })}
                         />
 						<NumberControl
-							label		= {__('Show grantparents', 'sim')}
+							label		= {__('Show grantparents', 'tsjippy')}
 							value		= {attributes.grantparents}
 							onChange	= {(val) => setAttributes({grantparents: parseInt(val)})}
 							min			= {1}

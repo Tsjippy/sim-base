@@ -1,5 +1,5 @@
 <?php
-namespace SIM;
+namespace TSJIPPY;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -10,7 +10,7 @@ add_action( 'admin_enqueue_scripts', __NAMESPACE__.'\registerScripts');
 // Style the buttons in the media library
 add_action( 'wp_enqueue_media', __NAMESPACE__.'\enqueuMediaStyle');
 function enqueuMediaStyle(){
-    wp_enqueue_style('sim_media_style', plugins_url('css/media.min.css', __DIR__), [], PLUGINVERSION);
+    wp_enqueue_style('tsjippy_media_style', plugins_url('css/media.min.css', __DIR__), [], PLUGINVERSION);
 }
 
 function registerScripts($hook=''){
@@ -22,9 +22,9 @@ function registerScripts($hook=''){
 
 	$runned	= true;
 	if(!is_user_logged_in()){
-		wp_enqueue_script('sim_nonce_script', plugins_url('js/nonce.min.js', __DIR__), [], PLUGINVERSION, false);
-		wp_localize_script( 'sim_nonce_script',
-			'sim',
+		wp_enqueue_script('tsjippy_nonce_script', plugins_url('js/nonce.min.js', __DIR__), [], PLUGINVERSION, false);
+		wp_localize_script( 'tsjippy_nonce_script',
+			'tsjippy',
 			array(
 				'baseUrl' 		=> get_home_url(),
 				'restApiPrefix'	=> '/'.RESTAPIPREFIX,
@@ -48,23 +48,23 @@ function registerScripts($hook=''){
 	wp_register_script('sweetalert', plugins_url('js/sweetalert.min.js', __DIR__), array(), '11.4.18', true);
 
 	//add main.js
-	wp_register_script('sim_script', plugins_url('js/main.min.js', __DIR__), array( 'sweetalert'), PLUGINVERSION, true);
+	wp_register_script('tsjippy_script', plugins_url('js/main.min.js', __DIR__), array( 'sweetalert'), PLUGINVERSION, true);
 
 	// purify library
-	wp_register_script('sim_purify', plugins_url('js/purify.min.js', __DIR__), array(), '2.3.8', true);
+	wp_register_script('tsjippy_purify', plugins_url('js/purify.min.js', __DIR__), array(), '2.3.8', true);
 
 	//Submit forms
-	wp_register_script('sim_user_select_script', plugins_url('js/user_select.min.js', __DIR__), array('sweetalert'), PLUGINVERSION, true);
-	wp_register_script('sim_formsubmit_script', plugins_url('js/formsubmit.min.js', __DIR__), array('sim_script'), PLUGINVERSION, true);
+	wp_register_script('tsjippy_user_select_script', plugins_url('js/user_select.min.js', __DIR__), array('sweetalert'), PLUGINVERSION, true);
+	wp_register_script('tsjippy_formsubmit_script', plugins_url('js/formsubmit.min.js', __DIR__), array('tsjippy_script'), PLUGINVERSION, true);
 
 	//table request shortcode
-	wp_register_script('sim_table_script', plugins_url('js/table.min.js', __DIR__), array('sortable', 'sim_formsubmit_script'), PLUGINVERSION, true);
+	wp_register_script('tsjippy_table_script', plugins_url('js/table.min.js', __DIR__), array('sortable', 'tsjippy_formsubmit_script'), PLUGINVERSION, true);
 
 	// Debug request shortcode
-	wp_register_script('sim_debug_script', plugins_url('js/debug.js', __DIR__), [], PLUGINVERSION, false);
+	wp_register_script('tsjippy_debug_script', plugins_url('js/debug.js', __DIR__), [], PLUGINVERSION, false);
 
-	wp_localize_script( 'sim_script',
-		'sim',
+	wp_localize_script( 'tsjippy_script',
+		'tsjippy',
 		array(
 			'ajaxUrl' 		=> admin_url( 'admin-ajax.php' ),
 			"userId"		=> wp_get_current_user()->ID,
@@ -75,7 +75,7 @@ function registerScripts($hook=''){
 		)
 	);
 	
-	wp_register_style('sim_taxonomy_style', plugins_url('css/taxonomy.min.css', __DIR__), array(), PLUGINVERSION);
+	wp_register_style('tsjippy_taxonomy_style', plugins_url('css/taxonomy.min.css', __DIR__), array(), PLUGINVERSION);
 
 	if($hook == 'post.php'){
 		enqueueScripts();
@@ -92,17 +92,17 @@ function enqueueScripts(){
 	registerScripts();
 
 	if ( is_home() || is_search() || is_category() || is_tax()){
-		wp_enqueue_style('sim_taxonomy_style');
+		wp_enqueue_style('tsjippy_taxonomy_style');
 	}
 
-	wp_enqueue_script('sim_script');
+	wp_enqueue_script('tsjippy_script');
 
 	//add main css
-	add_editor_style(plugins_url('css/sim.min.css', __DIR__));
+	add_editor_style(plugins_url('css/main.min.css', __DIR__));
 
 	//style fo main site
 	if(!is_admin()){
-		wp_enqueue_style( 'sim_style', plugins_url('css/sim.min.css', __DIR__), array(), PLUGINVERSION);
+		wp_enqueue_style( 'tsjippy_style', plugins_url('css/main.min.css', __DIR__), array(), PLUGINVERSION);
 	}
 }
 

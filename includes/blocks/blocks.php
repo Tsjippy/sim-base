@@ -1,5 +1,5 @@
 <?php
-namespace SIM;
+namespace TSJIPPY;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -7,15 +7,13 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 add_action( 'enqueue_block_editor_assets', __NAMESPACE__.'\addBlockJs');
 function addBlockJs(){
 
-    wp_register_script(
-        'sim-block-filter',
+    wp_enqueue_script(
+        'tsjippy-block-filter',
         plugins_url('blocks/block_filters/build/index.js', __DIR__),
         [ 'wp-blocks', 'wp-dom', 'wp-dom-ready', 'wp-edit-post' ],
         PLUGINVERSION,
 		true
     );
-	
-    wp_enqueue_script( 'sim-block-filter' );
 }
 
 // Filter block visibility
@@ -175,7 +173,7 @@ function displayChildren($attributes) {
 	));
 
 	if(!empty($html)){
-		wp_enqueue_script('sim-child-posts', plugins_url('show_children/expand.min.js', __FILE__), array(), STYLE_VERSION, true);
+		wp_enqueue_script('tsjippy-child-posts', plugins_url('show_children/expand.min.js', __FILE__), array(), STYLE_VERSION, true);
 
 		if(!empty($attributes['listtype'])){
 			$html	= str_replace("<li ", "<li style='list-style-type: {$attributes['listtype']}'", $html);

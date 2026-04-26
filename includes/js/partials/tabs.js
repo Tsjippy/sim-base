@@ -112,8 +112,8 @@ export function displayTab(tabButton){
         }
 
         // position any tables on this tab, as they can only be positioned when visible
-        if(typeof(SimTableFunctions) != 'undefined'){
-            SimTableFunctions.positionTable();
+        if(typeof(TsjippyTableFunctions) != 'undefined'){
+            TsjippyTableFunctions.positionTable();
         }
 
         return tab;

@@ -1,5 +1,5 @@
 <?php
-namespace SIM;
+namespace TSJIPPY;
 
 /**
  * Plugin Name:  		Shared Functionality For Others 
@@ -35,7 +35,8 @@ if(!isset($_SERVER['HTTP_SEC_FETCH_DEST'])){
 //only call it once
 //remove_action( 'wp_head', 'adjacent_posts_rel_link');
 define(__NAMESPACE__ .'\PLUGIN', plugin_basename(__FILE__));
-define(__NAMESPACE__ .'\PLUGINPATH', __FILE__);
+define(__NAMESPACE__ .'\PLUGINPATH', __DIR__);
+define(__NAMESPACE__ .'\PLUGINSLUG', basename(__FILE__, '.php'));
 
 $files = glob(__DIR__  . '/*.php');
 foreach ($files as $file) {
@@ -45,5 +46,5 @@ foreach ($files as $file) {
 //Register a function to run on plugin deactivation
 register_deactivation_hook( __FILE__, __NAMESPACE__.'\onDeactivation');
 function onDeactivation() {
-	
+	wp_clear_scheduled_hook( 'update_plugin_action' );
 }
