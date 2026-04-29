@@ -6,6 +6,7 @@
 - if ( ! defined( 'ABSPATH' ) ) exit; safety
 - if ( ! defined( 'ABSPATH' ) ) exit;
 - use of wp_get_environment_type()
+- redirection to settings page on plugin activation
 
 ### Changed
 - displaying admin menu messages
