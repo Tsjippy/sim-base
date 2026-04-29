@@ -22,6 +22,7 @@
 - sim to tsjippy
 - css selectors
 - PLUGINCONSTANT value
+- recurrence selector code
 
 ### Fixed
 - heartbeat issues
