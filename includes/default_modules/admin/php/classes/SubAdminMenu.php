@@ -194,9 +194,13 @@ abstract class SubAdminMenu{
      * 
      * @param   string      $name           The selector name
      * @param   string      $selectedValue  The current selected value
+     * @param   string      $labelText      Text for the label
      * @param   DOMElement  $parent         The element to append the selector to
      */
-    public function recurrenceSelector($name, $selectedValue, $parent){
+    public function recurrenceSelector($name, $selectedValue, $labelText, $parent){
+        addElement('label', $parent, [], $labelText);
+        addElement('br', $parent);
+
         $select     = addElement('select', $parent, ['name' => $name]);
 
         $options    = [
