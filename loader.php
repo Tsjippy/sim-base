@@ -3,10 +3,6 @@ namespace TSJIPPY;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-if(PLUGINVERSION < '7.0.0'){
-    return;
-}
-
 $classFiles = [];
 
 /**
