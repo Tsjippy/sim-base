@@ -8,6 +8,11 @@ abstract class AfterPluginUpdate {
 
     }
 
+    /**
+     * Runs when a Tsjippy plugin was updated
+     * @param   object  $upgraderObject     The upgrader object
+     * @param   array   $options            The options array
+     */
     public function upgradeSucces( $upgraderObject, $options ) {
         // If an update has taken place and the updated type is plugins and the plugins element exists
         if ( $options['action'] == 'update' && $options['type'] == 'plugin' && isset( $options['plugins'] ) ) {
@@ -35,5 +40,10 @@ abstract class AfterPluginUpdate {
         }
     }
 
+    /**
+     * Runs actions after a plugin update
+     * 
+     * @param   string  $oldVersion     The old version string
+     */
     abstract public function afterPluginUpdate($oldVersion);
 }

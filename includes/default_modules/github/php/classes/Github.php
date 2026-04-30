@@ -120,7 +120,7 @@ class Github{
      * @param	string	$author		The github author. Default 'Tsjippy'
      * @param	string	$repo	    The github repo name
      * @param	string	$path		The destination path
-     * @param   bool    $force      Whether to skip the cached result. Default false
+     * @param   bool    $force      Whether to skip the cached result version info. Default false
      * 
      * @return	true|WP_Error       True on success, WP_Error object on failure
      */

@@ -21,7 +21,7 @@ function checkForPluginUpdates(){
 		return;
 	}
 
-	// update the plugin first
+	// update the base plugin first
 	$url    = self_admin_url( 'update.php?action=upgrade-plugin&plugin=' . urlencode( TSJIPPY\PLUGINNAME ) );
     $url    = wp_nonce_url( $url, 'bulk-update-plugins' );
 	file_get_contents($url);
@@ -37,14 +37,6 @@ function checkForPluginUpdates(){
 		$slug   	= str_replace('tsjippy-', '', basename($plugin, '.php'));
 		$nameSpace	= strtoupper($slug);
 
-		// inactive module
-		if( ! defined("TSJIPPY\\$nameSpace\\PLUGINVERSION") ){
-			TSJIPPY\printArray("Constant does not exist for $slug ");
-			continue;
-		}
-
-		$oldVersion	= false;
-
 		$oldVersion	= constant("TSJIPPY\\$nameSpace\\PLUGINVERSION");
 		
 		$release	= $github->getLatestRelease('Tsjippy', $slug, true);
@@ -58,7 +50,7 @@ function checkForPluginUpdates(){
 		$newVersion	= $release['tag_name'];
 
 		// Download the new version
-		//TSJIPPY\printArray("Name: $module. Current Version $oldVersion, new version $newVersion. ");
+		TSJIPPY\printArray("Name: $slug. Current Version $oldVersion, new version $newVersion. ");
 		if(version_compare($newVersion, $oldVersion)){
 			TSJIPPY\printArray("Updating $slug");
 			

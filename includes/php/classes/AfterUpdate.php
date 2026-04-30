@@ -10,7 +10,9 @@ class AfterUpdate extends AfterPluginUpdate {
 
         printArray('Running update actions');
 
-        if(version_compare('7.0.0', $oldVersion)){
+        if(version_compare('10.0.0', $oldVersion)){
+            $github = new GITHUB\Github();
+
             /**
              * transfer module settings to option er plugin
              */
@@ -24,6 +26,11 @@ class AfterUpdate extends AfterPluginUpdate {
                 }
                 
                 update_option("tsjippy_{$module}_settings", $settings);
+
+                /**
+                 * Download the the module as plugin
+                 */
+                $github->downloadFromGithub('Tsjippy', TSJIPPY\PLUGINNAME, WP_PLUGIN_DIR."\tsjippy-$module");
             }
 
             /**
@@ -36,6 +43,7 @@ class AfterUpdate extends AfterPluginUpdate {
                 $wpdb->query("ALTER TABLE $table RENAME TO $newName");
             }
 
+            
         }
 
         
