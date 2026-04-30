@@ -2,6 +2,7 @@
 ## [Unreleased] - yyyy-mm-dd
 
 ### Added
+- activate a plugin after downloading  Co-authored-by: Copilot <copilot@github.com>
 
 ### Changed
 
