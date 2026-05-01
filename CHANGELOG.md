@@ -4,6 +4,7 @@
 ### Added
 
 ### Changed
+- updated github workflow versions
 
 ### Fixed
 
