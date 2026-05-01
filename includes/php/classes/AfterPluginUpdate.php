@@ -20,10 +20,13 @@ abstract class AfterPluginUpdate {
                 // Check to ensure it's a tsjippy plugin
 
                 if( str_contains($plugin, 'tsjippy-')) {
-                    error_log("Scheduling update actions for {$plugin}");
+                    $slug = str_replace(['tsjippy-', '-'], '', basename($plugin, '.php'));
+                    
+                    error_log("Scheduling update actions for {$slug}");
+                    
                     $oldVersion = $upgraderObject->skin->plugin_info['Version'];
 
-                    wp_schedule_single_event(time() + 10, 'schedule_tsjippy_plugin_update_action', [ $plugin, $oldVersion ]);
+                    wp_schedule_single_event(time() + 10, 'schedule_tsjippy_plugin_update_action', [ $slug, $oldVersion ]);
                 }
             }
         }

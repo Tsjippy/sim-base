@@ -11,7 +11,11 @@ add_action( 'upgrader_process_complete', function($upgraderObject, $options){
 
 // Runs 10 seconds after a succesfull update of a tsjippy- plugin to be able to use the new files
 add_action( 'schedule_tsjippy_plugin_update_action', function($slug, $oldVersion){
-    $className  = "TSJIPPY\\" . strtoupper($slug) . "\\AfterUpdate";
+    if($slug == 'sharedfunctionality'){
+        $className  = "TSJIPPY\\AfterUpdate";
+    }else{
+        $className  = "TSJIPPY\\" . strtoupper($slug) . "\\AfterUpdate";
+    }
 
     error_log($className);
     
