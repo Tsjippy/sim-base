@@ -44,12 +44,8 @@ foreach ($files as $file) {
     require_once($file);
 }
 
-// run on activation
-add_action( 'activated_plugin', function ( $plugin ) {
-    if( $plugin != PLUGIN ) {
-        return;
-    }
-
+// run before activation
+register_activation_hook( __FILE__, function(){
     // Create private upload folder
     $path   = wp_upload_dir()['basedir'].'/private';
     if (!is_dir($path)) {
@@ -60,18 +56,6 @@ add_action( 'activated_plugin', function ( $plugin ) {
 
     $family = new FAMILY\Family();
     $family->createDbTables();
-
-    
-    /**
-     * Redirect to settings page after plugin activation
-     * If it is activated from the plugins page and not in bulk
-     */ 
-    if(
-        $_REQUEST['bulk_action'] ?? '' != 'Apply' &&
-        $_REQUEST['action'] ?? '' == 'activate'
-    ){
-        exit( wp_safe_redirect( admin_url( esc_url('admin.php?page=tsjippy') ) ) );
-    }
 } );
 
 //Register a function to run on plugin deactivation
@@ -80,9 +64,25 @@ function onDeactivation() {
 	wp_clear_scheduled_hook( 'update_plugin_action' );
 }
 
+// Run after activation
 add_action( 'activated_plugin', function($plugin){
-	// Redirect to settings page after plugin activation
-    if($plugin == PLUGIN && wp_safe_redirect( esc_url(admin_url('admin.php?page=tsjippy') )  ) ){
-		exit();
-	}
+    /**
+     * Redirect to settings page after plugin activation
+     * If it is activated from the plugins page and not in bulk
+     */ 
+    if(
+        str_contains($plugin, 'tsjippy') &&
+        (
+            !isset($_REQUEST['bulk_action'] ) ||
+            $_REQUEST['bulk_action'] != 'Apply'
+        ) &&
+        $_REQUEST['action'] == 'activate'
+    ){
+        $page   = basename($plugin, '.php');
+
+        if($plugin == PLUGIN){
+            $page = 'tsjippy';
+        }
+        exit( wp_safe_redirect( esc_url(admin_url("admin.php?page=$page") )  ) );
+    }
 });
