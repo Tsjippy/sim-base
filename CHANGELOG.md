@@ -9,6 +9,7 @@
 
 ### Fixed
 - upgrade options
+- ony redirec after activation if needed  Co-authored-by: Copilot <copilot@github.com>
 
 ### Updated
 
