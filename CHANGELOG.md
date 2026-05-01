@@ -2,15 +2,22 @@
 ## [Unreleased] - yyyy-mm-dd
 
 ### Added
-- activate a plugin after downloading 
 
 ### Changed
 
 ### Fixed
-- create family tables
-- loader
 
 ### Updated
+
+## [10.0.3] - 2026-04-30
+
+
+### Added
+- activate a plugin after downloading 
+
+### Fixed
+- create family tables
+- loader
 
 ## [10.0.2] - 2026-04-30
 
