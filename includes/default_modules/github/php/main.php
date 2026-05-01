@@ -55,7 +55,12 @@ function showPluginUpdate($transient){
 			continue;
 		}
 
-		$item			= $github->getVersionInfo($plugin);
+		$repo	= basename($plugin, '.php');
+		if($plugin != TSJIPPY\PLUGIN){
+			$repo	= str_replace('tsjippy-', '', $repo);
+		}
+
+		$item	= $github->getVersionInfo($plugin, 'Tsjippy', $repo);
 
 		if(!is_object($item)){
 			return $transient;
