@@ -7,6 +7,7 @@
 - exclude .vscode from releases
 
 ### Fixed
+- after update actions
 
 ### Updated
 
