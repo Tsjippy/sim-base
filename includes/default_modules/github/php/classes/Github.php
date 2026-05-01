@@ -134,8 +134,9 @@ class Github{
         global $wp_filesystem;
 
         $oldVersion	= -1;
-        if (defined("TSJIPPY\\$repo\\PLUGINVERSION")) {
-            $oldVersion	= constant("TSJIPPY\\$repo\\PLUGINVERSION");
+        $nameSpace  = strtoupper(str_replace('tsjippy-', '', $repo));
+        if (defined("TSJIPPY\\$nameSpace\\PLUGINVERSION")) {
+            $oldVersion	= constant("TSJIPPY\\$nameSpace\\PLUGINVERSION");
         }
 
         // Get latest release info

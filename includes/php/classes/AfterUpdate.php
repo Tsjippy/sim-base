@@ -12,12 +12,8 @@ class AfterUpdate extends AfterPluginUpdate {
 
         error_log("Old Version is $oldVersion");
 
-        if(version_compare('10.0.0', $oldVersion)){
-            if(class_exists('TSJIPPY|GITHUB\Github')){
-                $github = new GITHUB\Github();
-            }else{
-                error_log('Github class not found');
-            }
+        if(version_compare('10.0.0', $oldVersion) === 1){
+            $github = new GITHUB\Github();
 
             /**
              * transfer module settings to option er plugin
@@ -35,16 +31,19 @@ class AfterUpdate extends AfterPluginUpdate {
                 
                 update_option("tsjippy_{$module}_settings", $settings);
 
-                if(class_exists('TSJIPPY|GITHUB\Github')){
-                    error_log("Installing $module as plugin");
-                    /**
-                     * Download the the module as plugin
-                     */
-                    $github->downloadFromGithub('Tsjippy', TSJIPPY\PLUGINNAME, WP_PLUGIN_DIR."\tsjippy-$module");
-
-                    // Activate
-                    activate_plugin("tsjippy-$module/tsjippy-$module.php");
+                if(in_array($module, ['admin', 'family', 'fileupload', 'github'] )){
+                    continue;
                 }
+
+                error_log("Installing $module as plugin");
+                
+                /**
+                 * Download the the module as plugin
+                 */
+                $github->downloadFromGithub('Tsjippy', $module, WP_PLUGIN_DIR."/tsjippy-$module");
+
+                // Activate
+                activate_plugin("tsjippy-$module/tsjippy-$module.php");
             }
 
             /**
@@ -56,10 +55,6 @@ class AfterUpdate extends AfterPluginUpdate {
                 $newName    = str_replace('_sim_', '_tsjippy_', $table);
                 $wpdb->query("ALTER TABLE $table RENAME TO $newName");
             }
-
-            
         }
-
-        
     }
 }
