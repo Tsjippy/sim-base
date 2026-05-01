@@ -4,13 +4,21 @@
 ### Added
 
 ### Changed
+
+### Fixed
+
+### Updated
+
+## [10.0.5] - 2026-05-01
+
+
+### Changed
 - updated github workflow versions
 - only redirect on activation when needed
 
 ### Fixed
 - upgrade options
-
-### Updated
+- ony redirec after activation if needed  Co-authored-by: Copilot <copilot@github.com>
 
 ## [10.0.4] - 2026-05-01
 
