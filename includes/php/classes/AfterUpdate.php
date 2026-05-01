@@ -10,8 +10,14 @@ class AfterUpdate extends AfterPluginUpdate {
 
         printArray('Running update actions');
 
+        error_log("Old Version is $oldVersion");
+
         if(version_compare('10.0.0', $oldVersion)){
-            $github = new GITHUB\Github();
+            if(class_exists('TSJIPPY|GITHUB\Github')){
+                $github = new GITHUB\Github();
+            }else{
+                error_log('Github class not found');
+            }
 
             /**
              * transfer module settings to option er plugin
@@ -19,6 +25,8 @@ class AfterUpdate extends AfterPluginUpdate {
             $modules     = get_option('sim_modules', []);
 
             foreach($modules as $module => $settings){
+                error_log("Processing $module");
+
                 if(isset($settings['emails'])){
                     update_option("tsjippy_{$module}_emails", $settings);
 
@@ -27,13 +35,16 @@ class AfterUpdate extends AfterPluginUpdate {
                 
                 update_option("tsjippy_{$module}_settings", $settings);
 
-                /**
-                 * Download the the module as plugin
-                 */
-                $github->downloadFromGithub('Tsjippy', TSJIPPY\PLUGINNAME, WP_PLUGIN_DIR."\tsjippy-$module");
+                if(class_exists('TSJIPPY|GITHUB\Github')){
+                    error_log("Installing $module as plugin");
+                    /**
+                     * Download the the module as plugin
+                     */
+                    $github->downloadFromGithub('Tsjippy', TSJIPPY\PLUGINNAME, WP_PLUGIN_DIR."\tsjippy-$module");
 
-                // Activate
-                activate_plugin("tsjippy-$module/tsjippy-$module.php");
+                    // Activate
+                    activate_plugin("tsjippy-$module/tsjippy-$module.php");
+                }
             }
 
             /**

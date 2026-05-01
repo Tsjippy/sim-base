@@ -20,18 +20,7 @@ abstract class AfterPluginUpdate {
                 // Check to ensure it's a tsjippy plugin
 
                 if( str_contains($plugin, 'tsjippy-')) {
-                    // Include the necessary file for activate_plugin()
-                    require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-
-                    error_log("Updating '$plugin' plugin");
-
-                    // Check if the plugin is not already active
-                    if ( ! is_plugin_active( $plugin ) ) {
-                        // Activate the plugin
-                        activate_plugin( $plugin );
-                    }
-
-                    printArray('Scheduling update actions');
+                    error_log("Scheduling update actions for {$plugin}");
                     $oldVersion = $upgraderObject->skin->plugin_info['Version'];
 
                     wp_schedule_single_event(time() + 10, 'schedule_tsjippy_plugin_update_action', [ $plugin, $oldVersion ]);

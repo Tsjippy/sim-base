@@ -12,10 +12,15 @@ add_action( 'upgrader_process_complete', function($upgraderObject, $options){
 // Runs 10 seconds after a succesfull update of a tsjippy- plugin to be able to use the new files
 add_action( 'schedule_tsjippy_plugin_update_action', function($slug, $oldVersion){
     $className  = "TSJIPPY\\" . strtoupper($slug) . "\\AfterUpdate";
+
+    error_log($className);
     
     // Run update actions for this plugin if it exists
     if(class_exists($className)){
+        error_log("Update: class $className does exist");
         $afterUpdate            = new $className();
         $afterUpdate->afterPluginUpdate( $oldVersion );
+    }else{
+        error_log("Update: class $className does not exist");
     }
 }, 10, 2 );
