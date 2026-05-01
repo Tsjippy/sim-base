@@ -16,8 +16,6 @@ add_action( 'schedule_tsjippy_plugin_update_action', function($slug, $oldVersion
     }else{
         $className  = "TSJIPPY\\" . strtoupper($slug) . "\\AfterUpdate";
     }
-
-    error_log($className);
     
     // Run update actions for this plugin if it exists
     if(class_exists($className)){

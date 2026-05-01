@@ -61,8 +61,17 @@ add_action( 'activated_plugin', function ( $plugin ) {
     $family = new FAMILY\Family();
     $family->createDbTables();
 
-    // Redirect to settings page after plugin activation
-    exit( esc_url(wp_safe_redirect( admin_url( esc_url('admin.php?page=tsjippy') ) ) ) );
+    
+    /**
+     * Redirect to settings page after plugin activation
+     * If it is activated from the plugins page and not in bulk
+     */ 
+    if(
+        $_REQUEST['bulk_action'] ?? '' != 'Apply' &&
+        $_REQUEST['action'] ?? '' == 'activate'
+    ){
+        exit( esc_url(wp_safe_redirect( admin_url( esc_url('admin.php?page=tsjippy') ) ) ) );
+    }
 } );
 
 //Register a function to run on plugin deactivation
