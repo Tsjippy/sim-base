@@ -16,19 +16,6 @@ def check_input(key: str) -> bool:
     """
     return f'{key}' in os.environ and os.environ[f'{key}'] != ""
 
-def get_boolean(key: str) -> bool:
-    """
-    Parses an environment variable as a boolean
-    """
-    env = os.environ[f'INPUT_{key}'].lower()
-    if env == "true":
-        return True
-    elif env == "false":
-        return False
-    else:
-        print(f"::error::❌ Invalid '{key.lower()}' input argument: '{os.environ['INPUT_{key}']}'")
-        exit(1)
-
 def run_command(cmd: list[str], end_group: bool = False):
     """
     Runs a given command, surrounding output with ::stop-commands::
@@ -130,7 +117,7 @@ files = []
 
 # Create Github object
 github = Github(base_url=os.environ['GITHUB_API_URL'],
-                login_or_token=os.environ['INPUT_TOKEN'],
+                login_or_token=os.environ['GITHUB_TOKEN'],
                 user_agent="mini-bomba/create-github-release")
 
 # Get the repo
