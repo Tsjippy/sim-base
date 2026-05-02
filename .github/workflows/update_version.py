@@ -1,12 +1,9 @@
 import re
 from pathlib import Path
 import datetime
-import requests.exceptions
 from github import Github
 from github.GithubException import GithubException, UnknownObjectException
 import os
-import os.path
-import time
 import subprocess
 import secrets
 
@@ -47,8 +44,15 @@ if not check_input("RELEASE_TAG"):
     exit(1)
 tag_name = os.environ['RELEASE_TAG']
 
+if not check_input("PLUGIN"):
+    print("::error::❌ Missing required input: PLUGIN")
+    exit(1)
+plugin = os.environ['PLUGIN']
+
+print(plugin)
+
 # load plugin file
-txt = Path('tsjippy-shared-functionality.php').read_text()
+txt = Path(plugin + '.php').read_text()
 
 # get old version
 try:
@@ -60,7 +64,7 @@ except Exception as e:
 txt = txt.replace(oldVersion, tag_name)
 
 # Write changes
-f = open('tsjippy-shared-functionality.php', "w")
+f = open(plugin + '.php', "w")
 f.write(txt)
 f.close()
 
@@ -68,7 +72,7 @@ f.close()
 
 file    = 'CHANGELOG.md'
 
-# load plugin file
+# load changelog file
 changelog = Path(file).read_text()
 
 # Get the whole unrelease section

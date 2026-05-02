@@ -16,9 +16,9 @@ jobs:
 
         - name: Update version
           env: 
-            RELEASE_ID: ${{ github.event.release.id }}
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             RELEASE_TAG: ${{ github.event.release.name }}
+            PLUGIN: ${{ github.event.repository.name }}
           run: python ./.github/workflows/update_version.py
 
         - name: Update wp plugin version
@@ -27,7 +27,7 @@ jobs:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
               file-path: |
-                tsjippy-shared-functionality.php
+                ${{ github.event.repository.name }}.php
                 CHANGELOG.md
               commit-msg: Update wp plugin version
               github-token: ${{ secrets.GITHUB_TOKEN }}
