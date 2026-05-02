@@ -5,6 +5,7 @@
 - Auto creation of release description
 
 ### Changed
+- github workflow generalization
 
 ### Fixed
 
