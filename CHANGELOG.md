@@ -6,6 +6,7 @@
 ### Changed
 
 ### Fixed
+- error when error when downloading plugin  Co-authored-by: Copilot <copilot@github.com>
 
 ### Updated
 
