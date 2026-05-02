@@ -19,10 +19,9 @@ add_action( 'schedule_tsjippy_plugin_update_action', function($slug, $oldVersion
     
     // Run update actions for this plugin if it exists
     if(class_exists($className)){
-        TSJIPPY\printArray("Update: class $className does exist");
         $afterUpdate            = new $className();
         $afterUpdate->afterPluginUpdate( $oldVersion );
     }else{
-        TSJIPPY\printArray("Update: class $className does not exist");
+        printArray("Update: class $className does not exist");
     }
 }, 10, 2 );
