@@ -4,6 +4,7 @@
 ### Added
 
 ### Changed
+- finalizing on release workflow
 
 ### Fixed
 
