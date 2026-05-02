@@ -40,7 +40,11 @@ class AfterUpdate extends AfterPluginUpdate {
                 /**
                  * Download the the module as plugin
                  */
-                $github->downloadFromGithub('Tsjippy', $module, WP_PLUGIN_DIR."/tsjippy-$module");
+                $result = $github->downloadFromGithub('Tsjippy', $module, WP_PLUGIN_DIR."/tsjippy-$module");
+                if(is_wp_error($result)){
+                    TSJIPPY\printArray($result);
+                    continue;
+                }
 
                 // Activate
                 activate_plugin("tsjippy-$module/tsjippy-$module.php");

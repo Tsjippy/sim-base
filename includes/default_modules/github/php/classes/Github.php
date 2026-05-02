@@ -155,6 +155,10 @@ class Github{
             if($e->getCode() == 404){
                 // Get a new download link, bypass transient
                 $release	= $this->getLatestRelease($author, $repo, true);
+                if(is_wp_error($release)){
+                    return $release;
+                }
+
                 try{
                     $zipContent = $this->releases->assets()->show($author, $repo, $release['assets'][0]['id'], true);
                 }catch (\Exception $e){
