@@ -6,14 +6,9 @@
 ### Changed
 
 ### Fixed
+- update to version 10
 
 ### Updated
-
-## [10.0.8] - 2026-05-02
-
-
-### Fixed
-- update to version 10
 
 ## [10.0.7] - 2026-05-02
 
